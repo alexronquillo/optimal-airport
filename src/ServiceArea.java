@@ -1,7 +1,6 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 public class ServiceArea {
 	private ServiceBehavior serviceBehavior;
 	private boolean available;
