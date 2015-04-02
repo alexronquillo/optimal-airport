@@ -1,29 +1,24 @@
 
 
-public class AirTrafficController {
-	private static int rejectedPlanes = 0;
+public class AirTrafficController implements Runnable {	
 	private static int landingPlanes = 0;
-	
-	public static void start() {
-		new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					if (hasRunway()) {
-						if ((Airport.getLandedQueue().remainingCapacity() - landingPlanes > 0) && hasArrivals()) {
-							Airplane airplane = Airport.getArrivalsQueue().poll();
-							System.out.println("ATC signals plane to land");			
-							signalLanding(airplane);
-							landingPlanes++;
-						} else if (hasPlanesAwaitingTakeoff()) {
-							Airplane airplane = Airport.getDepartureQueue().poll(); 
-							System.out.println("ATC signals plane to takeoff");
-							signalTakeoff(airplane);
-						}
-					} 
+
+	@Override
+	public void run() {
+		while (true) {
+			if (hasRunway()) {
+				if ((Airport.getLandedQueue().remainingCapacity() - landingPlanes > 0) && hasArrivals()) {
+					Airplane airplane = Airport.getArrivalsQueue().poll();
+					System.out.println("ATC signals plane to land");			
+					signalLanding(airplane);
+					landingPlanes++;
+				} else if (hasPlanesAwaitingTakeoff()) {
+					Airplane airplane = Airport.getDepartureQueue().poll(); 
+					System.out.println("ATC signals plane to takeoff");
+					signalTakeoff(airplane);
 				}
-			}
-		}.run();
+			} 
+		}
 	}
 	
 	public static void addToLandedQueue(Airplane airplane) {
@@ -53,9 +48,5 @@ public class AirTrafficController {
 	
 	private static void signalTakeoff(Airplane airplane) {
 		airplane.takeoff();
-	}
-	
-	public static void rejectedPlane() {
-		rejectedPlanes++;
 	}
 }
