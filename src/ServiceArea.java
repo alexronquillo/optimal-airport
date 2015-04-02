@@ -1,11 +1,8 @@
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ServiceArea {
 	private ServiceBehavior serviceBehavior;
-	private AtomicBoolean available;
+	private AtomicBoolean available = new AtomicBoolean(true);
 	private int sleepTime = 2000;
 	
 	public ServiceArea(ServiceBehavior serviceBehavior) {
@@ -15,6 +12,10 @@ public abstract class ServiceArea {
 	
 	public boolean isAvailable() {
 		return available.get();
+	}
+	
+	public void setAvailable(boolean available) {
+		this.available.set(available);
 	}
 	
 	public void service(Airplane airplane) {		
