@@ -9,6 +9,7 @@ public class Airplane {
 	private Priority priority;
 	private Size size;
 	private String name;
+	private Runway runway = null;
 	
 	public Airplane(String name, Priority priority, Size size) {
 		this.name = name;		
@@ -28,28 +29,26 @@ public class Airplane {
 		return name;
 	}
 	
-	public void land(AirTrafficController atc, Runway runway) {
-		System.out.println(name + " begins landing procedure");
+	public void land() {
+		runway = Airport.getRunways().poll();
 		final Timer landingTimer = new Timer();
 		landingTimer.schedule(new TimerTask () {
 			@Override
-			public void run() {				
-				releaseRunway(atc, runway);
-				atc.addToLandedQueue(Airplane.this);
-				System.out.println(name + " landed");				
+			public void run() {
+				releaseRunway(runway);
+				System.out.println("Landed");
 				landingTimer.cancel();
 			}
 		}, getLandingDelay());
 	}
 	
-	public void takeoff(AirTrafficController atc, Runway runway) {
-		System.out.println(name + " begins takeoff procedure");
+	public void takeoff() {
 		final Timer takeoffTimer = new Timer();
 		takeoffTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
-				releaseRunway(atc, runway);
-				System.out.println(name + " exited the system");
+				releaseRunway(runway);
+				System.out.println("Took off");
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());
@@ -57,15 +56,29 @@ public class Airplane {
 	
 	@Override
 	public String toString() {
+		String sizeString = "";
+		switch (size) {
+			case SMALL:
+				sizeString = "Small";
+				break;
+			case MEDIUM:
+				sizeString = "Medium";
+				break;
+			case LARGE:
+				sizeString = "Large";
+				break;
+		}
+		
 		String airplaneString = "";
 		airplaneString += "Name: " + name + "\n";
 		airplaneString += "Priority: " + priority + "\n";
-		airplaneString += "Size: " + size + "\n";
+		airplaneString += "Size: " + sizeString + "\n";
 		return airplaneString;
 	}
 	
-	private void releaseRunway(AirTrafficController atc, Runway runway) { 
-		atc.addRunway(runway);
+	private void releaseRunway(Runway runway) { 
+		AirTrafficController.addRunway(runway);
+		System.out.println("Runway released");
 	}
 	
 	private long getTakeoffDelay() {

@@ -8,11 +8,11 @@ public class AirTrafficController {
 		while (true) {
 			if (hasRunway()) {
 				if (hasLandingVacancy()) {
-					Airplane airplane = Airport.arrivalsQueue.poll();
+					Airplane airplane = Airport.getArrivalsQueue().poll();
 					System.out.println("ATC signals plane to land");
 					signalLanding(airplane);
 				} else if (hasPlanesAwaitingTakeoff()) {
-					Airplane airplane = Airport.departureQueue.poll(); 
+					Airplane airplane = Airport.getDepartureQueue().poll(); 
 					System.out.println("ATC signals plane to takeoff");
 					signalTakeoff(airplane);
 				}
@@ -21,28 +21,28 @@ public class AirTrafficController {
 	}
 	
 	public static void addToLandedQueue(Airplane airplane) {
-		Airport.landedQueue.offer(airplane);
+		Airport.getLandedQueue().offer(airplane);
 		System.out.println("Airplane added to landed queue");
 	}
 	
 	public static void addRunway(Runway runway) {
-		Airport.runways.offer(runway);
+		Airport.getRunways().offer(runway);
 	}
 	
 	private static boolean hasRunway() {
-		return Airport.runways.size() > 0;
+		return Airport.getRunways().size() > 0;
 	}
 	
 	private static boolean hasLandingVacancy() {
-		return Airport.landedQueue.remainingCapacity() > 0;
+		return Airport.getLandedQueue().remainingCapacity() > 0;
 	}
 	
 	private static boolean hasArrivals() {
-		return Airport.arrivalsQueue.size() > 0;
+		return Airport.getArrivalsQueue().size() > 0;
 	}
 	
 	private static boolean hasPlanesAwaitingTakeoff() {
-		return Airport.departureQueue.size() > 0;
+		return Airport.getDepartureQueue().size() > 0;
 	}
 	
 	private static void signalLanding(Airplane airplane) {
