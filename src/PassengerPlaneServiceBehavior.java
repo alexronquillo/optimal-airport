@@ -2,7 +2,7 @@
 public class PassengerPlaneServiceBehavior implements ServiceBehavior {
 	private int serviceTime = 1000;
 	@Override
-	public void service(Airplane airplane) throws InvalidAirplaneTypeException {
+	public void service(Airplane airplane) throws InvalidAirplaneTypeException, InterruptedException {
 		try {
 			if (airplane instanceof PassengerPlane) {
 				System.out.println("Start: Servicing a passenger plane");
