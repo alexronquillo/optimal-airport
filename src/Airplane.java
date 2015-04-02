@@ -43,6 +43,7 @@ public class Airplane {
 	}
 	
 	public void takeoff() {
+		runway = Airport.getRunways().poll();
 		final Timer takeoffTimer = new Timer();
 		takeoffTimer.schedule(new TimerTask () {
 			@Override
@@ -56,29 +57,15 @@ public class Airplane {
 	
 	@Override
 	public String toString() {
-		String sizeString = "";
-		switch (size) {
-			case SMALL:
-				sizeString = "Small";
-				break;
-			case MEDIUM:
-				sizeString = "Medium";
-				break;
-			case LARGE:
-				sizeString = "Large";
-				break;
-		}
-		
 		String airplaneString = "";
 		airplaneString += "Name: " + name + "\n";
 		airplaneString += "Priority: " + priority + "\n";
-		airplaneString += "Size: " + sizeString + "\n";
+		airplaneString += "Size: " + size + "\n";
 		return airplaneString;
 	}
 	
 	private void releaseRunway(Runway runway) { 
-		AirTrafficController.addRunway(runway);
-		System.out.println("Runway released");
+		Airport.getRunways().offer(runway);
 	}
 	
 	private long getTakeoffDelay() {
