@@ -1,9 +1,22 @@
-import java.util.List;
 
-public class GroundMovementController {
+
+public class GroundMovementController implements Runnable {
 	
-	public static void start() {
-		
+	@Override
+	public void run() {
+		while(true) {
+			if(nextIsPassengerPlane()) {
+				while(!gateAvailable());
+				Gate gate = getGate();
+				PassengerPlane plane = (PassengerPlane)getNextPlane();
+				setPassengerPlaneToGate(gate, plane);
+			} else {
+				while (!cargoBayAvailable());
+				CargoBay bay = getCargoBay();
+			    CargoPlane plane = (CargoPlane)getNextPlane();
+				setCargoPlaneToCargoBay(bay, plane);
+			}
+		}
 	}
 	
 	private static boolean gateAvailable() {
@@ -22,19 +35,21 @@ public class GroundMovementController {
 		return null;
 	}
 	
-	private static void setPassengerPlaneToGate() {
-		
+	private static void setPassengerPlaneToGate(Gate gate, PassengerPlane plane) {
+		gate.service(plane);
 	}
 	
-	private static void setCargoPlaneToGate() {
-		
+	private static void setCargoPlaneToCargoBay(CargoBay bay, CargoPlane plane) {
+		bay.service(plane);
 	}
 	
-	private static boolean isNextPassengerPlane() {
-		return false;
+	private static boolean nextIsPassengerPlane() {
+		return Airport.getLandedQueue().peek() instanceof PassengerPlane;	
 	}
+
 	
-	//private static Airplane getNextPlane() {
-		//return -1;
-	//}
+	
+	private static Airplane getNextPlane() {
+		return null;
+	}
 }
