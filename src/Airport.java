@@ -24,25 +24,38 @@ public class Airport {
 	private static final int DEPARTURE_QUEUE_CAPACITY = 100;
 	private static final int NUM_GATES = 5;
 	private static final int NUM_BAYS = 5;
+	private static int rejectedPlanes = 0;
 	private static BlockingQueue<Runway> runways = initializeRunways();
-	private static Gate[] gateArray = initializeGates();
-	private static CargoBay[] bayArray = initializeCargoBays();
+	private static Gate[] gates = initializeGates();
+	private static CargoBay[] bays = initializeCargoBays();
 	private static BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
 	
+
+	public static void main(String[] args) {
+		AirTrafficController atc = new AirTrafficController();
+		atc.run();
+	}
 	
+	public static int getRejectedPlanes() {
+		return rejectedPlanes;
+	}
+	
+	public static void setRejectedPlanes(int rejectedPlanes) {
+		Airport.rejectedPlanes = rejectedPlanes;
+	}
 	
 	public static BlockingQueue<Runway> getRunways() {
 		return runways;
 	}
 	
-	public static Gate[] getGateAvailable() {
-		return gateArray;
+	public static Gate[] getGates() {
+		return gates;
 	}
 	
-	public static CargoBay[] getBayAvailable() {
-		return bayArray;
+	public static CargoBay[] getBays() {
+		return bays;
 	}
 	
 	public static BlockingQueue<Airplane> getArrivalsQueue() {
@@ -67,18 +80,18 @@ public class Airport {
 	}
 	
 	private static Gate[] initializeGates() {
-		Gate[] gateArray = new Gate[NUM_GATES];
+		Gate[] gates = new Gate[NUM_GATES];
 		for (int i = 0; i < NUM_GATES; ++i) {
-			gateArray[i] = new Gate();
+			gates[i] = new Gate();
 		}
-		return gateArray;
+		return gates;
 	}
 	
 	private static CargoBay[] initializeCargoBays() {
-		CargoBay[] bayArray = new CargoBay[NUM_BAYS];
+		CargoBay[] bays = new CargoBay[NUM_BAYS];
 		for (int i = 0; i < NUM_BAYS; ++i) {
-			bayArray[i] = new CargoBay();
+			bays[i] = new CargoBay();
 		}
-		return bayArray;
+		return bays;
 	}
 }

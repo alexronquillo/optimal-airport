@@ -67,7 +67,7 @@ public class Arrivals implements Runnable{
 	}
 	
 	public void rejectPlane() {
-		AirTrafficController.rejectedPlane();
+		Airport.setRejectedPlanes(Airport.getRejectedPlanes() + 1);
 	}
 	
 	public Airplane.Size getSize() {
@@ -81,6 +81,7 @@ public class Arrivals implements Runnable{
 	}
 	
 	public String getPlaneName() {
+		numberOfPlanes++;
 		return "Plane " + numberOfPlanes;
 	}
 	
