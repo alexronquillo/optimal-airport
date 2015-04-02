@@ -1,9 +1,11 @@
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
 
-public class ServiceArea {
+public abstract class ServiceArea {
 	private ServiceBehavior serviceBehavior;
 	private boolean available;
+	private int sleepTime = 2000;
 	
 	public ServiceArea(ServiceBehavior serviceBehavior) {
 		this.serviceBehavior = serviceBehavior;
@@ -18,21 +20,28 @@ public class ServiceArea {
 		this.available = available;
 	}
 	
-	public void service(Airplane airplane) {
-		try {			
-			serviceBehavior.service(airplane);
-		} catch (InvalidAirplaneTypeException e) {
-			System.out.println("InvalidAirplaneTypeException: " + e.getMessage());
-		} catch (NullPointerException e) {
-			System.out.println("NullPointerException: serviceBehavior is null");
-		}
+	public void service(Airplane airplane) {		
+			new Runnable(){
+				public void run() {
+					try {	
+						setAvailable(false);
+						serviceBehavior.service(airplane);
+						sendAirplaneToDepartureQueue(airplane);
+						Thread.sleep(sleepTime);
+						setAvailable(true);
+					}
+					catch (Exception e) {
+						System.out.println(e.getClass().getName() +"----" + e.getMessage());
+					}
+				}
+			};
 	}
 	
 	public void setServiceBehavior(ServiceBehavior serviceBehavior) {
 		this.serviceBehavior = serviceBehavior;
 	}
 	
-	private void sendAirplaneToDepartureQueue() {
+	private void sendAirplaneToDepartureQueue(Airplane plane) {
 		
 	}
 }
