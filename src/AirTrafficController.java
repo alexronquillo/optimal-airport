@@ -6,6 +6,7 @@ public class AirTrafficController {
 	BlockingQueue<Airplane> arrivalsQueue;
 	BlockingQueue<Airplane> landedQueue;
 	BlockingQueue<Airplane> departureQueue;
+	int rejectedPlanes = 0;
 	
 	public AirTrafficController(BlockingQueue<Runway> runways, BlockingQueue<Airplane> arrivalsQueue, BlockingQueue<Airplane> landedQueue, BlockingQueue<Airplane> departureQueue) {
 		this.runways = runways;
@@ -61,5 +62,9 @@ public class AirTrafficController {
 	
 	private void signalTakeoff(Airplane airplane) {
 		airplane.takeoff(this, runways.poll());
+	}
+	
+	public void rejectedPlane() {
+		rejectedPlanes++;
 	}
 }
