@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 
 
 public class Arrivals implements Runnable{
@@ -75,22 +76,6 @@ public class Arrivals implements Runnable{
 	}
 	
 	public Airplane.Priority getPriority() {
-		int index = generator.nextInt(NUMBER_OF_PRIORITIES);
-		return Airplane.Priority.values()[index];
-	}
-	
-	public String getPlaneName() {
-		return "Plane " + numberOfPlanes;
-	}
-	
-	//get a values anywhere from 75% to 125% mean value
-	public double getEstimate(double mean) {
-		double salt = generator.nextDouble() + .75;
-		
-		return mean * salt;
-	}
-
-}
 		int index = generator.nextInt(NUMBER_OF_PRIORITIES);
 		return Airplane.Priority.values()[index];
 	}
