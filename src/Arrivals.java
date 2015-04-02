@@ -16,11 +16,9 @@ public class Arrivals implements Runnable{
 	private final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
 	private boolean running = true;
 	private BlockingQueue<Airplane> arrivalsQueue = null;
-	private AirTrafficController atc = null;
 	
-	public Arrivals(AirTrafficController atc, BlockingQueue<Airplane> arrivalsQueue){
-		this.arrivalsQueue = arrivalsQueue;
-		this.atc = atc;
+	public Arrivals(){
+		this.arrivalsQueue = Airport.getArrivalsQueue();
 	}
 	
 	public void run() {		
@@ -52,7 +50,6 @@ public class Arrivals implements Runnable{
 	
 	//makes a plane
 	public Airplane generatePlane() {
-		Airplane plane = null;
 		int salt = generator.nextInt(100);
 		numberOfPlanes++;
 		
@@ -69,7 +66,7 @@ public class Arrivals implements Runnable{
 	}
 	
 	public void rejectPlane() {
-		atc.rejectedPlane();
+		AirTrafficController.rejectedPlane();
 	}
 	
 	public Airplane.Size getSize() {
@@ -83,7 +80,6 @@ public class Arrivals implements Runnable{
 	}
 	
 	public String getPlaneName() {
-		numberOfPlanes++;
 		return "Plane " + numberOfPlanes;
 	}
 	

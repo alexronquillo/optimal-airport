@@ -1,47 +1,40 @@
 import java.util.List;
 
 public class GroundMovementController {
-	List<Gate> gates;
-	List<CargoBay> bays;
 	
-	public GroundMovementController(List<Gate> gates, List<CargoBay> bays) {
-		this.gates = gates;
-		this.bays = bays;
-	}
-	
-	public void start() {
+	public static void start() {
 		
 	}
 	
-	private boolean gateAvailable() {
+	private static boolean gateAvailable() {
 		return false;	
 	}
 	
-	private boolean cargoBayAvailable() {
+	private static boolean cargoBayAvailable() {
 		return false;	
 	}
 	
-	private Gate getGate() {
+	private static Gate getGate() {
 		return null;
 	}
 	
-	private CargoBay getCargoBay() {
+	private static CargoBay getCargoBay() {
 		return null;
 	}
 	
-	private void setPassengerPlaneToGate() {
+	private static void setPassengerPlaneToGate() {
 		
 	}
 	
-	private void setCargoPlaneToGate() {
+	private static void setCargoPlaneToGate() {
 		
 	}
 	
-	private boolean isNextPassengerPlane() {
+	private static boolean isNextPassengerPlane() {
 		return false;
 	}
 	
-	//private Airplane getNextPlane() {
+	//private static Airplane getNextPlane() {
 		//return -1;
 	//}
 }

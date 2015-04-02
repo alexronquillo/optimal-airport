@@ -1,38 +1,45 @@
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ServiceArea {
+public abstract class ServiceArea {
 	private ServiceBehavior serviceBehavior;
-	private boolean available;
+	private AtomicBoolean available = new AtomicBoolean(true);
+	private int sleepTime = 2000;
 	
 	public ServiceArea(ServiceBehavior serviceBehavior) {
 		this.serviceBehavior = serviceBehavior;
-		available = true;
+		available.set(true);
 	}
 	
 	public boolean isAvailable() {
-		return available;
+		return available.get();
 	}
 	
 	public void setAvailable(boolean available) {
-		this.available = available;
+		this.available.set(available);
 	}
 	
-	public void service(Airplane airplane) {
-		try {			
-			serviceBehavior.service(airplane);
-		} catch (InvalidAirplaneTypeException e) {
-			System.out.println("InvalidAirplaneTypeException: " + e.getMessage());
-		} catch (NullPointerException e) {
-			System.out.println("NullPointerException: serviceBehavior is null");
-		}
+	public void service(Airplane airplane) {		
+			new Runnable(){
+				public void run() {
+					try {	
+						available.set(false);
+						serviceBehavior.service(airplane);
+						sendAirplaneToDepartureQueue(airplane);
+						Thread.sleep(sleepTime);
+						available.set(true);
+					}
+					catch (Exception e) {
+						System.out.println(e.getClass().getName() +"----" + e.getMessage());
+					}
+				}
+			}.run();
 	}
 	
 	public void setServiceBehavior(ServiceBehavior serviceBehavior) {
 		this.serviceBehavior = serviceBehavior;
 	}
 	
-	private void sendAirplaneToDepartureQueue() {
+	private void sendAirplaneToDepartureQueue(Airplane plane) {
 		
 	}
 }
