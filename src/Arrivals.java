@@ -2,20 +2,26 @@ import java.util.Random;
 
 
 public class Arrivals implements Runnable{
+	//following values are constants we should edit
 	private double meanInterArrivalTime = 2.0;
-	private Random generator = new Random();
 	private double runTime = 120.0;
-	private boolean running = true;
+	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
+	
+	//these values should never need editing
 	private double elapsedTime = 0.0;
 	private double startTime = 0.0;
-	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
+	private Random generator = new Random();
 	private int numberOfPlanes = 0;
 	private final int NUMBER_OF_SIZES = Airplane.Size.values().length;
 	private final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
+	private boolean running = true;
+	private BlockingQueue<Airplane> arrivalsQueue = null;
+	private AirTrafficController atc = null;
 	
-	//public Arrivals(AirTrafficController atc, ){
-		
-	//}
+	public Arrivals(AirTrafficController atc, BlockingQueue<Airplane> arrivalsQueue){
+		this.arrivalsQueue = arrivalsQueue;
+		this.atc = atc;
+	}
 	
 	public void run() {		
 		startTime = System.currentTimeMillis();
@@ -34,8 +40,12 @@ public class Arrivals implements Runnable{
 			
 			//make cargo and passenger planes at specific times
 			if ((timeElapsedTotal-elapsedTime) > arrivalTime){
-				generatePlane();
+				boolean success = arrivalsQueue.offer(generatePlane());
 				elapsedTime = timeElapsedTotal;
+				
+				if (!success) {
+					rejectPlane();
+				}
 			}
 		}
 	}
@@ -58,8 +68,8 @@ public class Arrivals implements Runnable{
 		}
 	}
 	
-	public void RejectedPlane() {
-		
+	public void rejectPlane() {
+		atc.rejectedPlane();
 	}
 	
 	public Airplane.Size getSize() {
@@ -68,6 +78,23 @@ public class Arrivals implements Runnable{
 	}
 	
 	public Airplane.Priority getPriority() {
+		int index = generator.nextInt(NUMBER_OF_PRIORITIES);
+		return Airplane.Priority.values()[index];
+	}
+	
+	public String getPlaneName() {
+		numberOfPlanes++;
+		return "Plane " + numberOfPlanes;
+	}
+	
+	//get a values anywhere from 75% to 125% mean value
+	public double getEstimate(double mean) {
+		double salt = generator.nextDouble() + .75;
+		
+		return mean * salt;
+	}
+
+}
 		int index = generator.nextInt(NUMBER_OF_PRIORITIES);
 		return Airplane.Priority.values()[index];
 	}
