@@ -25,7 +25,7 @@ public class Airport {
 	
 	public static void main(String[] args) {
 		ArrayBlockingQueue<Runway> runways = getRunways();		
-		BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
+		BlockingQueue<Airplane> arrivalsQueue = new ArrayBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
 		BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
 		BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
 		

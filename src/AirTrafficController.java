@@ -2,6 +2,7 @@ import java.util.concurrent.BlockingQueue;
 
 
 public class AirTrafficController {
+	int runwayCapacity;
 	BlockingQueue<Runway> runways;
 	BlockingQueue<Airplane> arrivalsQueue;
 	BlockingQueue<Airplane> landedQueue;
@@ -18,7 +19,7 @@ public class AirTrafficController {
 	public void start() {
 		while (true) {
 			if (hasRunway()) {
-				if (landingConditionsMet()) {
+				if (hasLandingVacancy()) {
 					Airplane airplane = arrivalsQueue.poll();
 					System.out.println("ATC signals plane to land");
 					signalLanding(airplane);
@@ -38,10 +39,6 @@ public class AirTrafficController {
 	
 	public void addRunway(Runway runway) {
 		runways.offer(runway);
-	}
-	
-	private boolean landingConditionsMet() {
-		return true;
 	}
 	
 	private boolean hasRunway() {
