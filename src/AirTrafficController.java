@@ -1,14 +1,13 @@
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 
 public class AirTrafficController {
-	ArrayBlockingQueue<Runway> runways;
-	ArrayBlockingQueue<Airplane> arrivalsQueue;
-	ArrayBlockingQueue<Airplane> landedQueue;
-	ArrayBlockingQueue<Airplane> departureQueue;
+	BlockingQueue<Runway> runways;
+	BlockingQueue<Airplane> arrivalsQueue;
+	BlockingQueue<Airplane> landedQueue;
+	BlockingQueue<Airplane> departureQueue;
 	
-	public AirTrafficController(ArrayBlockingQueue<Runway> runways, ArrayBlockingQueue<Airplane> arrivalsQueue, ArrayBlockingQueue<Airplane> landedQueue, ArrayBlockingQueue<Airplane> departureQueue) {
+	public AirTrafficController(BlockingQueue<Runway> runways, BlockingQueue<Airplane> arrivalsQueue, BlockingQueue<Airplane> landedQueue, BlockingQueue<Airplane> departureQueue) {
 		this.runways = runways;
 		this.arrivalsQueue = arrivalsQueue;
 		this.landedQueue = landedQueue;

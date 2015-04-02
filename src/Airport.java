@@ -1,4 +1,6 @@
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 
 /* A simple airport system consists of arriving airplanes, departing airplanes, 
@@ -23,9 +25,9 @@ public class Airport {
 	
 	public static void main(String[] args) {
 		ArrayBlockingQueue<Runway> runways = getRunways();		
-		ArrayBlockingQueue<Airplane> arrivalsQueue = new ArrayBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
-		ArrayBlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
-		ArrayBlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
+		BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
+		BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
+		BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
 		
 		Airplane testPlane = new PassengerPlane("Test passenger plane1", Airplane.Priority.HIGH, Airplane.Size.LARGE);
 		Airplane testPlane1 = new PassengerPlane("Test passenger plane2", Airplane.Priority.HIGH, Airplane.Size.MEDIUM);
