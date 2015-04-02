@@ -3,19 +3,20 @@ import java.util.TimerTask;
 
 
 public class Airplane {
+	public static enum Priority { LOW, MEDIUM, HIGH }
 	public static enum Size { SMALL, MEDIUM, LARGE }
 	
-	private int priority;
+	private Priority priority;
 	private Size size;
 	private String name;
 	
-	public Airplane(String name, int priority, Size size) {
+	public Airplane(String name, Priority priority, Size size) {
 		this.name = name;		
 		this.priority = priority;
 		this.size = size;
 	}
 	
-	public int getPriority() {
+	public Priority getPriority() {
 		return priority;
 	}
 	

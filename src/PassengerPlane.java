@@ -1,6 +1,6 @@
 
 public class PassengerPlane extends Airplane {
-	public PassengerPlane(String name, int priority, Size size) {
+	public PassengerPlane(String name, Priority priority, Size size) {
 		super(name, priority, size);
 	}
 }
