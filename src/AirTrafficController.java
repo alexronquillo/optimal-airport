@@ -2,29 +2,17 @@ import java.util.concurrent.BlockingQueue;
 
 
 public class AirTrafficController {
-	int runwayCapacity;
-	BlockingQueue<Runway> runways;
-	BlockingQueue<Airplane> arrivalsQueue;
-	BlockingQueue<Airplane> landedQueue;
-	BlockingQueue<Airplane> departureQueue;
-	int rejectedPlanes = 0;
+	static int rejectedPlanes = 0;
 	
-	public AirTrafficController(BlockingQueue<Runway> runways, BlockingQueue<Airplane> arrivalsQueue, BlockingQueue<Airplane> landedQueue, BlockingQueue<Airplane> departureQueue) {
-		this.runways = runways;
-		this.arrivalsQueue = arrivalsQueue;
-		this.landedQueue = landedQueue;
-		this.departureQueue = departureQueue;
-	}
-	
-	public void start() {
+	public static void start() {
 		while (true) {
 			if (hasRunway()) {
 				if (hasLandingVacancy()) {
-					Airplane airplane = arrivalsQueue.poll();
+					Airplane airplane = Airport.arrivalsQueue.poll();
 					System.out.println("ATC signals plane to land");
 					signalLanding(airplane);
 				} else if (hasPlanesAwaitingTakeoff()) {
-					Airplane airplane = departureQueue.poll(); 
+					Airplane airplane = Airport.departureQueue.poll(); 
 					System.out.println("ATC signals plane to takeoff");
 					signalTakeoff(airplane);
 				}
@@ -32,40 +20,40 @@ public class AirTrafficController {
 		}
 	}
 	
-	public void addToLandedQueue(Airplane airplane) {
-		landedQueue.offer(airplane);
+	public static void addToLandedQueue(Airplane airplane) {
+		Airport.landedQueue.offer(airplane);
 		System.out.println("Airplane added to landed queue");
 	}
 	
-	public void addRunway(Runway runway) {
-		runways.offer(runway);
+	public static void addRunway(Runway runway) {
+		Airport.runways.offer(runway);
 	}
 	
-	private boolean hasRunway() {
-		return runways.size() > 0;
+	private static boolean hasRunway() {
+		return Airport.runways.size() > 0;
 	}
 	
-	private boolean hasLandingVacancy() {
-		return landedQueue.remainingCapacity() > 0;
+	private static boolean hasLandingVacancy() {
+		return Airport.landedQueue.remainingCapacity() > 0;
 	}
 	
-	private boolean hasArrivals() {
-		return arrivalsQueue.size() > 0;
+	private static boolean hasArrivals() {
+		return Airport.arrivalsQueue.size() > 0;
 	}
 	
-	private boolean hasPlanesAwaitingTakeoff() {
-		return departureQueue.size() > 0;
+	private static boolean hasPlanesAwaitingTakeoff() {
+		return Airport.departureQueue.size() > 0;
 	}
 	
-	private void signalLanding(Airplane airplane) {
-		airplane.land(this, runways.poll());
+	private static void signalLanding(Airplane airplane) {
+		airplane.land();
 	}
 	
-	private void signalTakeoff(Airplane airplane) {
-		airplane.takeoff(this, runways.poll());
+	private static void signalTakeoff(Airplane airplane) {
+		airplane.takeoff();
 	}
 	
-	public void rejectedPlane() {
+	public static void rejectedPlane() {
 		rejectedPlanes++;
 	}
 }
