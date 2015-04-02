@@ -1,23 +1,29 @@
-import java.util.concurrent.BlockingQueue;
 
 
 public class AirTrafficController {
-	static int rejectedPlanes = 0;
+	private static int rejectedPlanes = 0;
+	private static int landingPlanes = 0;
 	
 	public static void start() {
-		while (true) {
-			if (hasRunway()) {
-				if (hasLandingVacancy()) {
-					Airplane airplane = Airport.getArrivalsQueue().poll();
-					System.out.println("ATC signals plane to land");
-					signalLanding(airplane);
-				} else if (hasPlanesAwaitingTakeoff()) {
-					Airplane airplane = Airport.getDepartureQueue().poll(); 
-					System.out.println("ATC signals plane to takeoff");
-					signalTakeoff(airplane);
+		new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					if (hasRunway()) {
+						if ((Airport.getLandedQueue().remainingCapacity() - landingPlanes > 0) && hasArrivals()) {
+							Airplane airplane = Airport.getArrivalsQueue().poll();
+							System.out.println("ATC signals plane to land");			
+							signalLanding(airplane);
+							landingPlanes++;
+						} else if (hasPlanesAwaitingTakeoff()) {
+							Airplane airplane = Airport.getDepartureQueue().poll(); 
+							System.out.println("ATC signals plane to takeoff");
+							signalTakeoff(airplane);
+						}
+					} 
 				}
-			} 
-		}
+			}
+		}.run();
 	}
 	
 	public static void addToLandedQueue(Airplane airplane) {
