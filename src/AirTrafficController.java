@@ -2,7 +2,7 @@
 
 public class AirTrafficController implements Runnable {	
 	private static int landingPlanes = 0;
-
+	
 	@Override
 	public void run() {
 		while (true) {
@@ -21,32 +21,32 @@ public class AirTrafficController implements Runnable {
 		}
 	}
 	
-	public static void addToLandedQueue(Airplane airplane) {
+	public void addToLandedQueue(Airplane airplane) {
 		Airport.getLandedQueue().offer(airplane);
 		System.out.println("Airplane added to landed queue");
 	}
 	
-	public static void addRunway(Runway runway) {
+	public void addRunway(Runway runway) {
 		Airport.getRunways().offer(runway);
 	}
 	
-	private static boolean hasRunway() {
+	private boolean hasRunway() {
 		return Airport.getRunways().size() > 0;
 	}
 	
-	private static boolean hasArrivals() {
+	private boolean hasArrivals() {
 		return Airport.getArrivalsQueue().size() > 0;
 	}
 	
-	private static boolean hasPlanesAwaitingTakeoff() {
+	private boolean hasPlanesAwaitingTakeoff() {
 		return Airport.getDepartureQueue().size() > 0;
 	}
 	
-	private static void signalLanding(Airplane airplane) {
+	private void signalLanding(Airplane airplane) {
 		airplane.land();
 	}
 	
-	private static void signalTakeoff(Airplane airplane) {
+	private void signalTakeoff(Airplane airplane) {
 		airplane.takeoff();
 	}
 }

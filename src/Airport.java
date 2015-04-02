@@ -22,13 +22,23 @@ public class Airport {
 	private static final int ARRIVALS_QUEUE_CAPACITY = 100;
 	private static final int LANDED_QUEUE_CAPACITY = 2;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 100;
+	private static int rejectedPlanes = 0;
 	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
 	
 	public static void main(String[] args) {
-		AirTrafficController.start();
+		AirTrafficController atc = new AirTrafficController();
+		atc.run();
+	}
+	
+	public static int getRejectedPlanes() {
+		return rejectedPlanes;
+	}
+	
+	public static void setRejectedPlanes(int rejectedPlanes) {
+		Airport.rejectedPlanes = rejectedPlanes;
 	}
 	
 	public static BlockingQueue<Runway> getRunways() {
