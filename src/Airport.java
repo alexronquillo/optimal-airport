@@ -22,13 +22,12 @@ public class Airport {
 	private static final int ARRIVALS_QUEUE_CAPACITY = 100;
 	private static final int LANDED_QUEUE_CAPACITY = 2;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 100;
+	private static BlockingQueue<Runway> runways = initializeRunways();		
+	private static BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
+	private static BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
+	private static BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
 	
 	public static void main(String[] args) {
-		ArrayBlockingQueue<Runway> runways = getRunways();		
-		BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
-		BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
-		BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
-		
 		Airplane testPlane = new PassengerPlane("Test passenger plane1", Airplane.Priority.HIGH, Airplane.Size.LARGE);
 		Airplane testPlane1 = new PassengerPlane("Test passenger plane2", Airplane.Priority.HIGH, Airplane.Size.MEDIUM);
 		Airplane testPlane2 = new PassengerPlane("Test passenger plane3", Airplane.Priority.HIGH, Airplane.Size.SMALL);
@@ -41,12 +40,27 @@ public class Airport {
 		arrivalsQueue.add(testPlane3);
 		arrivalsQueue.add(testPlane4);
 		
-		AirTrafficController atc = new AirTrafficController(runways, arrivalsQueue, landedQueue, departureQueue);
-		atc.start();
+		AirTrafficController.start();
+	}
+	
+	public static BlockingQueue<Runway> getRunways() {
+		return runways;
+	}
+	
+	public static BlockingQueue<Airplane> getArrivalsQueue() {
+		return arrivalsQueue;
+	}
+	
+	public static BlockingQueue<Airplane> getLandedQueue() {
+		return landedQueue;
+	}
+	
+	public static BlockingQueue<Airplane> getDepartureQueue() {
+		return departureQueue;
 	}
 
-	private static ArrayBlockingQueue<Runway> getRunways() {
-		ArrayBlockingQueue<Runway> runways = new ArrayBlockingQueue<>(NUM_RUNWAYS);
+	private static BlockingQueue<Runway> initializeRunways() {
+		BlockingQueue<Runway> runways = new ArrayBlockingQueue<>(NUM_RUNWAYS);
 		for (int i = 0; i < NUM_RUNWAYS; ++i) {
 			runways.add(new Runway());
 		}
