@@ -1,17 +1,17 @@
-
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AirTrafficController implements Runnable {	
-	private static int landingPlanes = 0;
+	private static AtomicInteger landingPlanes = new AtomicInteger(0);
 	
 	@Override
 	public void run() {
 		while (true) {
 			if (hasRunway()) {
-				if ((Airport.getLandedQueue().remainingCapacity() - landingPlanes > 0) && hasArrivals()) {
+				if ((Airport.getLandedQueue().remainingCapacity() - landingPlanes.get() > 0) && hasArrivals()) {
 					Airplane airplane = Airport.getArrivalsQueue().poll();
 					System.out.println("ATC signals plane to land");			
 					signalLanding(airplane);
-					landingPlanes++;
+					landingPlanes.set(landingPlanes.get() + 1);
 				} else if (hasPlanesAwaitingTakeoff()) {
 					Airplane airplane = Airport.getDepartureQueue().poll(); 
 					System.out.println("ATC signals plane to takeoff");
