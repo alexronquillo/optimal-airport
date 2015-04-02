@@ -29,24 +29,27 @@ public class Airplane {
 	}
 	
 	public void land(AirTrafficController atc, Runway runway) {
+		System.out.println(name + " begins landing procedure");
 		final Timer landingTimer = new Timer();
 		landingTimer.schedule(new TimerTask () {
 			@Override
-			public void run() {
+			public void run() {				
 				releaseRunway(atc, runway);
-				System.out.println("Landed");
+				atc.addToLandedQueue(Airplane.this);
+				System.out.println(name + " landed");				
 				landingTimer.cancel();
 			}
 		}, getLandingDelay());
 	}
 	
 	public void takeoff(AirTrafficController atc, Runway runway) {
+		System.out.println(name + " begins takeoff procedure");
 		final Timer takeoffTimer = new Timer();
 		takeoffTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
 				releaseRunway(atc, runway);
-				System.out.println("Took off");
+				System.out.println(name + " exited the system");
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());
@@ -54,29 +57,15 @@ public class Airplane {
 	
 	@Override
 	public String toString() {
-		String sizeString = "";
-		switch (size) {
-			case SMALL:
-				sizeString = "Small";
-				break;
-			case MEDIUM:
-				sizeString = "Medium";
-				break;
-			case LARGE:
-				sizeString = "Large";
-				break;
-		}
-		
 		String airplaneString = "";
 		airplaneString += "Name: " + name + "\n";
 		airplaneString += "Priority: " + priority + "\n";
-		airplaneString += "Size: " + sizeString + "\n";
+		airplaneString += "Size: " + size + "\n";
 		return airplaneString;
 	}
 	
 	private void releaseRunway(AirTrafficController atc, Runway runway) { 
 		atc.addRunway(runway);
-		System.out.println("Runway released");
 	}
 	
 	private long getTakeoffDelay() {
