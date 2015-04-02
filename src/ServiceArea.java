@@ -32,7 +32,7 @@ public abstract class ServiceArea {
 						System.out.println(e.getClass().getName() +"----" + e.getMessage());
 					}
 				}
-			};
+			}.run();
 	}
 	
 	public void setServiceBehavior(ServiceBehavior serviceBehavior) {
