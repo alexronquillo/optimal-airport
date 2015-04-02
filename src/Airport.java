@@ -22,24 +22,12 @@ public class Airport {
 	private static final int ARRIVALS_QUEUE_CAPACITY = 100;
 	private static final int LANDED_QUEUE_CAPACITY = 2;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 100;
-	private static BlockingQueue<Runway> runways = initializeRunways();		
+	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
 	
 	public static void main(String[] args) {
-		Airplane testPlane = new PassengerPlane("Test passenger plane1", Airplane.Priority.HIGH, Airplane.Size.LARGE);
-		Airplane testPlane1 = new PassengerPlane("Test passenger plane2", Airplane.Priority.HIGH, Airplane.Size.MEDIUM);
-		Airplane testPlane2 = new PassengerPlane("Test passenger plane3", Airplane.Priority.HIGH, Airplane.Size.SMALL);
-		Airplane testPlane3 = new PassengerPlane("Test passenger plane4", Airplane.Priority.HIGH, Airplane.Size.LARGE);
-		Airplane testPlane4 = new PassengerPlane("Test passenger plane5", Airplane.Priority.HIGH, Airplane.Size.SMALL);
-		
-		arrivalsQueue.add(testPlane);		
-		arrivalsQueue.add(testPlane1);
-		arrivalsQueue.add(testPlane2);
-		arrivalsQueue.add(testPlane3);
-		arrivalsQueue.add(testPlane4);
-		
 		AirTrafficController.start();
 	}
 	
