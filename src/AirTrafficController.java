@@ -17,7 +17,7 @@ public class AirTrafficController {
 	public void start() {
 		while (true) {
 			if (hasRunway()) {
-				if (hasLandingVacancy() && hasArrivals()) {
+				if (landingConditionsMet()) {
 					Airplane airplane = arrivalsQueue.poll();
 					System.out.println("ATC signals plane to land");
 					signalLanding(airplane);
@@ -41,6 +41,10 @@ public class AirTrafficController {
 	
 	private boolean hasRunway() {
 		return runways.size() > 0;
+	}
+	
+	private boolean landingConditionsMet() {
+		boolean landingConditionsMet;
 	}
 	
 	private boolean hasLandingVacancy() {

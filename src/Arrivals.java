@@ -13,9 +13,9 @@ public class Arrivals implements Runnable{
 	private final int NUMBER_OF_SIZES = Airplane.Size.values().length;
 	private final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
 	
-	public Arrivals(AirTrafficController atc, ){
+	//public Arrivals(AirTrafficController atc, ){
 		
-	}
+	//}
 	
 	public void run() {		
 		startTime = System.currentTimeMillis();
