@@ -3,9 +3,7 @@ public class CargoPlaneServiceBehavior implements ServiceBehavior {
 	@Override
 	public void service(Airplane airplane) throws InvalidAirplaneTypeException, InterruptedException {
 		if (airplane instanceof CargoPlane) {
-			System.out.println("Start: Servicing a cargo plane");
 			Thread.sleep(getServiceTime(airplane));
-			System.out.println("Finish: Servicing a cargo plane");
 		} else {
 			throw new InvalidAirplaneTypeException("Can only service a cargo plane");
 		}

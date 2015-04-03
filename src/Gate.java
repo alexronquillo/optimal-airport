@@ -1,7 +1,7 @@
 
 public class Gate extends ServiceArea {
-	public Gate() {
-		super(new PassengerPlaneServiceBehavior());
+	public Gate(String name) {
+		super(name, new PassengerPlaneServiceBehavior());
 	}
 
 	@Override

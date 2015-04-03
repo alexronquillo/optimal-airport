@@ -28,10 +28,15 @@ public abstract class ServiceArea {
 				public void run() {
 					try {	
 						available.set(false);
+						System.out.println(airplane.getName() + " starts receiving service at " + name + ".");
 						serviceBehavior.service(airplane);
+						System.out.println(airplane.getName() + " finishes receiving service at " + name + ".");
 						sendAirplaneToDepartureQueue(airplane);
+						System.out.println(name + " starts cleaning procedure.");
 						cleanupServiceArea();
+						System.out.println(name + " finishes cleaning procedure.");						
 						available.set(true);
+						System.out.println(name + " is available.");
 					}
 					catch (Exception e) {
 						e.printStackTrace();
@@ -46,7 +51,7 @@ public abstract class ServiceArea {
 	
 	private void sendAirplaneToDepartureQueue(Airplane plane) {
 		while (!Airport.getDepartureQueue().offer(plane));
-		System.out.println("Airplane added to the departure queue.");
+		System.out.println(plane.getName() + " added to the departure queue.");
 	}
 	
 	protected abstract void cleanupServiceArea() throws InterruptedException;

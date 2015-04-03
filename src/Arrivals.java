@@ -47,17 +47,15 @@ public class Arrivals implements Runnable{
 	//makes a plane
 	public Airplane generatePlane() {
 		int salt = generator.nextInt(100);
+		String name = getPlaneName();	
 		numberOfPlanes++;
 		
-		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){
-			//cargo
-			System.out.println("generates cargo");
-			return new CargoPlane(getPlaneName(), getPriority(), getSize());
-		}
-		else {
-			//passenger
-			System.out.println("generates passenger");
-			return new PassengerPlane(getPlaneName(), getPriority(), getSize());
+		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
+			System.out.println(name + " arrives.");
+			return new CargoPlane(name, getPriority(), getSize());
+		} else {
+			System.out.println(name + " arrives.");
+			return new PassengerPlane(name, getPriority(), getSize());
 		}
 	}
 	

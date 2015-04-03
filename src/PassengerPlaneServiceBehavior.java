@@ -2,10 +2,8 @@
 public class PassengerPlaneServiceBehavior implements ServiceBehavior {
 	@Override
 	public void service(Airplane airplane) throws InterruptedException, InvalidAirplaneTypeException {	
-		if (airplane instanceof PassengerPlane) {
-			System.out.println("Start: Servicing a passenger plane");
-			Thread.sleep(getServiceTime(airplane));
-			System.out.println("Finish: Servicing a passenger plane");
+		if (airplane instanceof PassengerPlane) {			
+			Thread.sleep(getServiceTime(airplane));			
 		} else {
 			throw new InvalidAirplaneTypeException("Can only service a passenger plane");
 		}

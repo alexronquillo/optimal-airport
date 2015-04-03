@@ -22,11 +22,9 @@ public class Airport {
 	
 
 	public static void main(String[] args) {
-		Airplane passPlane1 = new PassengerPlane("Passenger Plane 1", Airplane.Priority.HIGH, Airplane.Size.LARGE);
-		Airplane passPlane2 = new PassengerPlane("Passenger Plane 2", Airplane.Priority.MEDIUM, Airplane.Size.MEDIUM);
-		arrivalsQueue.offer(passPlane1);
-		arrivalsQueue.offer(passPlane2);
-
+		Thread arrivalsThread = new Thread(new Arrivals());
+		arrivalsThread.start();
+		
 		Thread atcThread = new Thread(airTrafficController);
 		atcThread.start();
 		
@@ -90,7 +88,7 @@ public class Airport {
 	private static Gate[] initializeGates() {
 		Gate[] gates = new Gate[NUM_GATES];
 		for (int i = 0; i < NUM_GATES; ++i) {
-			gates[i] = new Gate();
+			gates[i] = new Gate("Gate " + i);
 		}
 		return gates;
 	}
@@ -98,7 +96,7 @@ public class Airport {
 	private static CargoBay[] initializeCargoBays() {
 		CargoBay[] bays = new CargoBay[NUM_BAYS];
 		for (int i = 0; i < NUM_BAYS; ++i) {
-			bays[i] = new CargoBay();
+			bays[i] = new CargoBay("CargoBay " + i);
 		}
 		return bays;
 	}
