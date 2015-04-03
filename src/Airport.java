@@ -5,11 +5,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 public class Airport {
 	
 	private static final int NUM_RUNWAYS = 2;
-	private static final int ARRIVALS_QUEUE_CAPACITY = 100;
-	private static final int LANDED_QUEUE_CAPACITY = 2;
-	private static final int DEPARTURE_QUEUE_CAPACITY = 100;
 	private static final int NUM_GATES = 5;
 	private static final int NUM_BAYS = 5;
+	private static final int ARRIVALS_QUEUE_CAPACITY = 10;
+	private static final int LANDED_QUEUE_CAPACITY = 10;
+	private static final int DEPARTURE_QUEUE_CAPACITY = 1;
 	private static int rejectedPlanes = 0;
 	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static Gate[] gates = initializeGates();
@@ -54,6 +54,10 @@ public class Airport {
 	
 	public static BlockingQueue<Airplane> getDepartureQueue() {
 		return departureQueue;
+	}
+	
+	public static boolean departureQueueFull() {
+		return departureQueue.remainingCapacity() == 0;
 	}
 
 	private static BlockingQueue<Runway> initializeRunways() {
