@@ -34,7 +34,9 @@ public class Airplane implements Comparable<Airplane> {
 		landingTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
-				releaseRunway(runway);
+				Airport.getRunways().offer(runway);
+				Airport.getLandedQueue().offer(Airplane.this);
+				Airport.getAirTrafficController().signalLanded();
 				System.out.println("Landed");
 				landingTimer.cancel();
 			}
@@ -47,7 +49,7 @@ public class Airplane implements Comparable<Airplane> {
 		takeoffTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
-				releaseRunway(runway);
+				Airport.getRunways().offer(runway);
 				System.out.println("Took off");
 				takeoffTimer.cancel();
 			}
@@ -61,10 +63,6 @@ public class Airplane implements Comparable<Airplane> {
 		airplaneString += "Priority: " + priority + "\n";
 		airplaneString += "Size: " + size + "\n";
 		return airplaneString;
-	}
-	
-	private void releaseRunway(Runway runway) { 
-		Airport.getRunways().offer(runway);
 	}
 	
 	private long getTakeoffDelay() {
