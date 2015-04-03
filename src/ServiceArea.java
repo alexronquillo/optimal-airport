@@ -24,7 +24,7 @@ public abstract class ServiceArea {
 	}
 	
 	public void service(Airplane airplane) {		
-			new Runnable(){
+			new Thread(new Runnable(){
 				public void run() {
 					try {	
 						available.set(false);
@@ -42,7 +42,7 @@ public abstract class ServiceArea {
 						e.printStackTrace();
 					}
 				}
-			}.run();
+			}).start();
 	}
 	
 	public void setServiceBehavior(ServiceBehavior serviceBehavior) {
