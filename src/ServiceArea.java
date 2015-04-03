@@ -3,11 +3,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class ServiceArea {
 	private ServiceBehavior serviceBehavior;
 	private AtomicBoolean available = new AtomicBoolean(true);
-	private int sleepTime = 2000;
+	private String name;
 	
-	public ServiceArea(ServiceBehavior serviceBehavior) {
+	public ServiceArea(String name, ServiceBehavior serviceBehavior) {
+		this.name = name;
 		this.serviceBehavior = serviceBehavior;
 		available.set(true);
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public boolean isAvailable() {
