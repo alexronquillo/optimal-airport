@@ -1,8 +1,7 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-public class Airplane {
+public class Airplane implements Comparable<Airplane> {
 	public static enum Priority { LOW, MEDIUM, HIGH }
 	public static enum Size { SMALL, MEDIUM, LARGE }
 	
@@ -98,5 +97,10 @@ public class Airplane {
 				break;
 	}
 		return landingDelay;
+	}
+	
+	@Override
+	public int compareTo(Airplane airplane) {
+		return this.priority.compareTo(airplane.getPriority());
 	}
 }
