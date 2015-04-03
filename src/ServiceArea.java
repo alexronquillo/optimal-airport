@@ -25,11 +25,11 @@ public abstract class ServiceArea {
 						available.set(false);
 						serviceBehavior.service(airplane);
 						sendAirplaneToDepartureQueue(airplane);
-						Thread.sleep(sleepTime);
+						cleanupServiceArea();
 						available.set(true);
 					}
 					catch (Exception e) {
-						System.out.println(e.getClass().getName() +"----" + e.getMessage());
+						e.printStackTrace();
 					}
 				}
 			}.run();
@@ -40,6 +40,9 @@ public abstract class ServiceArea {
 	}
 	
 	private void sendAirplaneToDepartureQueue(Airplane plane) {
-		
+		while (!Airport.getDepartureQueue().offer(plane));
+		System.out.println("Airplane added to the departure queue.");
 	}
+	
+	protected abstract void cleanupServiceArea() throws InterruptedException;
 }
