@@ -1,21 +1,24 @@
-
 public class GroundMovementController implements Runnable {
 
 	@Override
 	public void run() {
 		try {
 			while (true) {
-				if (nextIsPassengerPlane()) {
-					while (!gateAvailable());
-					Gate gate;
-					gate = getGate();
-					PassengerPlane plane = (PassengerPlane) getNextPlane();
-					setPassengerPlaneToGate(gate, plane);
-				} else {
-					while (!cargoBayAvailable());
-					CargoBay bay = getCargoBay();
-					CargoPlane plane = (CargoPlane) getNextPlane();
-					setCargoPlaneToCargoBay(bay, plane);
+				if (!Airport.getLandedQueue().isEmpty()) {
+					if (nextIsPassengerPlane()) {
+						while (!gateAvailable());
+						Gate gate;
+						gate = getGate();
+						PassengerPlane plane = (PassengerPlane) getNextPlane();
+						System.out.println(plane);
+						setPassengerPlaneToGate(gate, plane);
+					} else {
+						while (!cargoBayAvailable());
+						CargoBay bay = getCargoBay();
+						CargoPlane plane = (CargoPlane) getNextPlane();
+						System.out.println(plane);
+						setCargoPlaneToCargoBay(bay, plane);
+					}
 				}
 			}
 		} catch (NullServiceAreaException e) {
