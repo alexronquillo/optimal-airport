@@ -3,12 +3,12 @@ import java.util.concurrent.BlockingQueue;
 
 
 public class Arrivals implements Runnable{
-	//following values are constants we should edit
+	// Following values are constants we should edit
 	private double meanInterArrivalTime = 2.0;
 	private double runTime = 120.0;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	
-	//these values should never need editing
+	// These values should never need editing
 	private double elapsedTime = 0.0;
 	private double startTime = 0.0;
 	private Random generator = new Random();
@@ -18,27 +18,22 @@ public class Arrivals implements Runnable{
 	private boolean running = true;
 	private BlockingQueue<Airplane> arrivalsQueue = null;
 	
-	public Arrivals(){
+	public Arrivals() {
 		this.arrivalsQueue = Airport.getArrivalsQueue();
 	}
 	
+	@Override
 	public void run() {		
 		startTime = System.currentTimeMillis();
 		
-		//main running loop
 		while (running) {
 			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
 			double arrivalTime = getEstimate(meanInterArrivalTime);
 
-			//set running to false if over the time
-			if (timeElapsedTotal/1000 > runTime){
+			if (timeElapsedTotal/1000 > runTime) {
 				System.out.println("Time done");
 				running = false;
-				continue;
-			}
-			
-			//make cargo and passenger planes at specific times
-			if ((timeElapsedTotal-elapsedTime) > arrivalTime){
+			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
 				boolean success = arrivalsQueue.offer(generatePlane());
 				elapsedTime = timeElapsedTotal;
 				
