@@ -6,11 +6,11 @@ public class AirTrafficController implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			if (hasRunway()) {
-				if ((Airport.getLandedQueue().remainingCapacity() - landingPlanes.get() > 0) && hasArrivals()) {
+			if (airportHasRunway()) {
+				if (airplaneCanLand()) {
 					Airplane airplane = Airport.getArrivalsQueue().poll();
 					System.out.println("ATC signals plane to land");			
-					signalLanding(airplane);
+					signalLanding(airplane);					
 					landingPlanes.set(landingPlanes.get() + 1);
 				} else if (hasPlanesAwaitingTakeoff()) {
 					Airplane airplane = Airport.getDepartureQueue().poll(); 
@@ -21,16 +21,15 @@ public class AirTrafficController implements Runnable {
 		}
 	}
 	
-	public void addToLandedQueue(Airplane airplane) {
-		Airport.getLandedQueue().offer(airplane);
-		System.out.println("Airplane added to landed queue");
+	public void signalLanded() {
+		landingPlanes.set(landingPlanes.get() - 1);
 	}
 	
-	public void addRunway(Runway runway) {
-		Airport.getRunways().offer(runway);
+	private boolean airplaneCanLand() {		
+		return (Airport.getLandedQueue().remainingCapacity() - landingPlanes.get() > 0) && hasArrivals();
 	}
 	
-	private boolean hasRunway() {
+	private boolean airportHasRunway() {
 		return Airport.getRunways().size() > 0;
 	}
 	
@@ -48,5 +47,5 @@ public class AirTrafficController implements Runnable {
 	
 	private void signalTakeoff(Airplane airplane) {
 		airplane.takeoff();
-	}
+	}	
 }
