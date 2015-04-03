@@ -2,7 +2,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Airplane implements Comparable<Airplane> {
-	public static enum Priority { LOW, MEDIUM, HIGH }
+	public static enum Priority { HIGH, MEDIUM, LOW }
 	public static enum Size { SMALL, MEDIUM, LARGE }
 	
 	private Priority priority;
