@@ -17,11 +17,21 @@ public class Airport {
 	private static BlockingQueue<Airplane> arrivalsQueue = new PriorityBlockingQueue<>(ARRIVALS_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
+	private static AirTrafficController airTrafficController = new AirTrafficController();
+	private static GroundMovementController groundMovementController = new GroundMovementController();
 	
 
 	public static void main(String[] args) {
-		AirTrafficController atc = new AirTrafficController();
-		atc.run();
+		Airplane passPlane1 = new PassengerPlane("Passenger Plane 1", Airplane.Priority.HIGH, Airplane.Size.LARGE);
+		Airplane passPlane2 = new PassengerPlane("Passenger Plane 2", Airplane.Priority.MEDIUM, Airplane.Size.MEDIUM);
+		arrivalsQueue.offer(passPlane1);
+		arrivalsQueue.offer(passPlane2);
+
+		Thread atcThread = new Thread(airTrafficController);
+		atcThread.start();
+		
+		Thread gmcThread = new Thread(groundMovementController);
+		gmcThread.start();		
 	}
 	
 	public static int getRejectedPlanes() {
@@ -42,6 +52,14 @@ public class Airport {
 	
 	public static CargoBay[] getBays() {
 		return bays;
+	}
+	
+	public static AirTrafficController getAirTrafficController() {
+		return airTrafficController;
+	}
+	
+	public static GroundMovementController getGroundMovementController() {
+		return groundMovementController;
 	}
 	
 	public static BlockingQueue<Airplane> getArrivalsQueue() {
