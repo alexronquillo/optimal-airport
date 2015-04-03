@@ -10,13 +10,11 @@ public class GroundMovementController implements Runnable {
 						Gate gate;
 						gate = getGate();
 						PassengerPlane plane = (PassengerPlane) getNextPlane();
-						System.out.println(plane);
 						setPassengerPlaneToGate(gate, plane);
 					} else {
 						while (!cargoBayAvailable());
 						CargoBay bay = getCargoBay();
 						CargoPlane plane = (CargoPlane) getNextPlane();
-						System.out.println(plane);
 						setCargoPlaneToCargoBay(bay, plane);
 					}
 				}
