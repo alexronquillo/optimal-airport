@@ -43,12 +43,7 @@ public class Airport {
 			bays[i] = new CargoBay();
 		}
 		
-		landedQueue.add(new CargoPlane("plane 1", Airplane.Priority.LOW, Airplane.Size.LARGE));
-		landedQueue.add(new PassengerPlane("plane 2", Airplane.Priority.LOW, Airplane.Size.LARGE));
-
-		
-		
-		//AirTrafficController.start();
+		AirTrafficController.start();
 		new GroundMovementController().start();
 	}
 	
