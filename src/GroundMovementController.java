@@ -44,6 +44,7 @@ public class GroundMovementController implements Runnable {
 	private static Gate getGate() throws NullServiceAreaException {
 		for (Gate gate : Airport.getGates()) {
 			if (gate.isAvailable()) {
+				gate.setAvailable(false);
 				return gate;
 			}
 		}

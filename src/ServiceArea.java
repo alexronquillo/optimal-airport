@@ -27,7 +27,6 @@ public abstract class ServiceArea {
 			new Thread(new Runnable(){
 				public void run() {
 					try {	
-						available.set(false);
 						System.out.println(airplane.getName() + " starts receiving service at " + name + ". Time: " + Airport.getSimulationTime());
 						serviceBehavior.service(airplane);
 						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + Airport.getSimulationTime());
