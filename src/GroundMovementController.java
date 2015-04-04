@@ -7,8 +7,7 @@ public class GroundMovementController implements Runnable {
 				if (!Airport.getLandedQueue().isEmpty()) {
 					if (nextIsPassengerPlane()) {
 						while (!gateAvailable());
-						Gate gate;
-						gate = getGate();
+						Gate gate = getGate();
 						PassengerPlane plane = (PassengerPlane) getNextPlane();
 						setPassengerPlaneToGate(gate, plane);
 					} else {

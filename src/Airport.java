@@ -11,6 +11,7 @@ public class Airport {
 	private static final int LANDED_QUEUE_CAPACITY = 2;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 1;
 	private static int rejectedPlanes = 0;
+	private static long startTime = System.currentTimeMillis();
 	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static Gate[] gates = initializeGates();
 	private static CargoBay[] bays = initializeCargoBays();
@@ -19,7 +20,6 @@ public class Airport {
 	private static BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
 	private static AirTrafficController airTrafficController = new AirTrafficController();
 	private static GroundMovementController groundMovementController = new GroundMovementController();
-	
 
 	public static void main(String[] args) {
 		Thread arrivalsThread = new Thread(new Arrivals());
@@ -30,6 +30,10 @@ public class Airport {
 		
 		Thread gmcThread = new Thread(groundMovementController);
 		gmcThread.start();		
+	}
+
+	public static double getSimulationTime() {
+		return (double)(System.currentTimeMillis() - startTime) / 1000;
 	}
 	
 	public static int getRejectedPlanes() {

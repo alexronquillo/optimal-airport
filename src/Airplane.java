@@ -29,7 +29,7 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	public void land() {
-		System.out.println(name + " starts landing procedure. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+		System.out.println(name + " starts landing procedure. Time: " + Airport.getSimulationTime());
 		runway = Airport.getRunways().poll();
 		final Timer landingTimer = new Timer();
 		landingTimer.schedule(new TimerTask () {
@@ -38,21 +38,21 @@ public class Airplane implements Comparable<Airplane> {
 				Airport.getRunways().offer(runway);
 				Airport.getLandedQueue().offer(Airplane.this);
 				Airport.getAirTrafficController().signalLanded();
-				System.out.println(name + " landed. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+				System.out.println(name + " landed. Time: " + Airport.getSimulationTime());
 				landingTimer.cancel();
 			}
 		}, getLandingDelay());
 	}
 	
 	public void takeoff() {
-		System.out.println(name + " starts takeoff procedure. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+		System.out.println(name + " starts takeoff procedure. Time: " + Airport.getSimulationTime());
 		runway = Airport.getRunways().poll();
 		final Timer takeoffTimer = new Timer();
 		takeoffTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
 				Airport.getRunways().offer(runway);
-				System.out.println(name + " took off. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+				System.out.println(name + " took off. Time: " + Airport.getSimulationTime());
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());

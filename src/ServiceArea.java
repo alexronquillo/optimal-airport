@@ -28,15 +28,15 @@ public abstract class ServiceArea {
 				public void run() {
 					try {	
 						available.set(false);
-						System.out.println(airplane.getName() + " starts receiving service at " + name + ". Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+						System.out.println(airplane.getName() + " starts receiving service at " + name + ". Time: " + Airport.getSimulationTime());
 						serviceBehavior.service(airplane);
-						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + Airport.getSimulationTime());
 						sendAirplaneToDepartureQueue(airplane);
-						System.out.println(name + " starts cleaning procedure. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+						System.out.println(name + " starts cleaning procedure. Time: " + Airport.getSimulationTime());
 						cleanupServiceArea();
-						System.out.println(name + " finishes cleaning procedure. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);						
+						System.out.println(name + " finishes cleaning procedure. Time: " + Airport.getSimulationTime());						
 						available.set(true);
-						System.out.println(name + " is available. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
+						System.out.println(name + " is available. Time: " + Airport.getSimulationTime());
 					}
 					catch (Exception e) {
 						e.printStackTrace();
