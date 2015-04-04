@@ -48,7 +48,6 @@ public class Arrivals implements Runnable{
 	public Airplane generatePlane() {
 		int salt = generator.nextInt(100);
 		String name = getPlaneName();	
-		numberOfPlanes++;
 		
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
 			System.out.println(name + " arrives.");
