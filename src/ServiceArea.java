@@ -28,15 +28,15 @@ public abstract class ServiceArea {
 				public void run() {
 					try {	
 						available.set(false);
-						System.out.println(airplane.getName() + " starts receiving service at " + name + ".");
+						System.out.println(airplane.getName() + " starts receiving service at " + name + ". Time: " + Arrivals.getElapsedTime());
 						serviceBehavior.service(airplane);
-						System.out.println(airplane.getName() + " finishes receiving service at " + name + ".");
+						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + Arrivals.getElapsedTime());
 						sendAirplaneToDepartureQueue(airplane);
-						System.out.println(name + " starts cleaning procedure.");
+						System.out.println(name + " starts cleaning procedure. Time: " + Arrivals.getElapsedTime());
 						cleanupServiceArea();
-						System.out.println(name + " finishes cleaning procedure.");						
+						System.out.println(name + " finishes cleaning procedure. Time: " + Arrivals.getElapsedTime());						
 						available.set(true);
-						System.out.println(name + " is available.");
+						System.out.println(name + " is available. Time: " + Arrivals.getElapsedTime());
 					}
 					catch (Exception e) {
 						e.printStackTrace();

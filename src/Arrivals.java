@@ -9,7 +9,7 @@ public class Arrivals implements Runnable{
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	
 	// These values should never need editing
-	private double elapsedTime = 0.0;
+	private static double elapsedTime = 0.0;
 	private double startTime = 0.0;
 	private Random generator = new Random();
 	private int numberOfPlanes = 0;
@@ -36,7 +36,6 @@ public class Arrivals implements Runnable{
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
 				boolean success = arrivalsQueue.offer(generatePlane());
 				elapsedTime = timeElapsedTotal;
-				
 				if (!success) {
 					rejectPlane();
 				}
@@ -50,10 +49,10 @@ public class Arrivals implements Runnable{
 		String name = getPlaneName();	
 		
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
-			System.out.println(name + " arrives.");
+			System.out.println(name + " with " + getPriority() + " priority " +  "and " + getSize() + " size " + "arrives. Time: " + elapsedTime);
 			return new CargoPlane(name, getPriority(), getSize());
 		} else {
-			System.out.println(name + " arrives.");
+			System.out.println(name + " with " + getPriority() + " priority " +  "and " + getSize() + " size " + "arrives. Time: " + elapsedTime);
 			return new PassengerPlane(name, getPriority(), getSize());
 		}
 	}
@@ -82,6 +81,11 @@ public class Arrivals implements Runnable{
 		double salt = generator.nextDouble() + .75;
 		
 		return mean * salt;
+	}
+	
+	public static double getElapsedTime(){
+		return elapsedTime;
+		
 	}
 
 }
