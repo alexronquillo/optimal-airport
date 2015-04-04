@@ -9,12 +9,12 @@ public class AirTrafficController implements Runnable {
 			if (airportHasRunway()) {
 				if (airplaneCanLand()) {
 					Airplane airplane = Airport.getArrivalsQueue().poll();
-					System.out.println("Air Traffic Controller signals " + airplane.getName() + " to land.");			
+					System.out.println("Air Traffic Controller signals " + airplane.getName() + " to land. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);			
 					signalLanding(airplane);					
 					landingPlanes.set(landingPlanes.get() + 1);
 				} else if (hasPlanesAwaitingTakeoff()) {
 					Airplane airplane = Airport.getDepartureQueue().poll(); 
-					System.out.println("Air Traffic Controller signals " + airplane.getName() + " to takeoff.");
+					System.out.println("Air Traffic Controller signals " + airplane.getName() + " to takeoff. Time: " + (System.currentTimeMillis()-Arrivals.getStartTime())/1000);
 					signalTakeoff(airplane);
 				}
 			} 

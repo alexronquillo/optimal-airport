@@ -10,7 +10,7 @@ public class Arrivals implements Runnable{
 	
 	// These values should never need editing
 	private static double elapsedTime = 0.0;
-	private double startTime = 0.0;
+	private static double startTime = 0.0;
 	private Random generator = new Random();
 	private int numberOfPlanes = 0;
 	private final int NUMBER_OF_SIZES = Airplane.Size.values().length;
@@ -88,4 +88,8 @@ public class Arrivals implements Runnable{
 		
 	}
 
+	public static double getStartTime(){
+		return startTime;
+		
+	}
 }
