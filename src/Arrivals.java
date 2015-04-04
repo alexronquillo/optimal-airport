@@ -4,11 +4,13 @@ import java.util.concurrent.BlockingQueue;
 
 public class Arrivals implements Runnable{
 	// Following values are constants we should edit
-	private double meanInterArrivalTime = 2.0;
 	private double runTime = 120.0;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
+	private final int averageNumberOfFlightsPerDay = 2400;
+	
 	
 	// These values should never need editing
+	private double meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
 	private static double elapsedTime = 0.0;
 	private static double startTime = 0.0;
 	private Random generator = new Random();
@@ -30,9 +32,10 @@ public class Arrivals implements Runnable{
 			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
 			double arrivalTime = getEstimate(meanInterArrivalTime);
 
-			if (timeElapsedTotal/1000 > runTime) {
+			if (timeElapsedTotal > runTime) {
 				System.out.println("Time done");
 				running = false;
+				continue;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
 				boolean success = arrivalsQueue.offer(generatePlane());
 				elapsedTime = timeElapsedTotal;
