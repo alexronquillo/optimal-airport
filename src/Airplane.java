@@ -9,6 +9,9 @@ public class Airplane implements Comparable<Airplane> {
 	private Size size;
 	private String name;
 	private Runway runway = null;
+	private double startWait = 0;
+	private double stopWait = 0;
+	private double totalWait = 0;
 	
 	public Airplane(String name, Priority priority, Size size) {
 		this.name = name;		
@@ -42,6 +45,8 @@ public class Airplane implements Comparable<Airplane> {
 				landingTimer.cancel();
 			}
 		}, getLandingDelay());
+		this.startWait();
+
 	}
 	
 	public void takeoff() {
@@ -56,6 +61,8 @@ public class Airplane implements Comparable<Airplane> {
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());
+		
+		System.out.println("total wait time of " + name + ": " + totalWait);
 	}
 	
 	@Override
@@ -103,4 +110,18 @@ public class Airplane implements Comparable<Airplane> {
 	public int compareTo(Airplane airplane) {
 		return this.priority.compareTo(airplane.getPriority());
 	}
+	
+	public void startWait() {
+		startWait = Arrivals.getElapsedTime();
+	}
+	
+	public void stopWait(){
+		stopWait = Arrivals.getElapsedTime();
+		totalWait += stopWait - startWait;
+	}
+	
+	public double getTotalWait() {
+		return totalWait;
+	}
+	
 }

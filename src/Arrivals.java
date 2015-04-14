@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class Arrivals implements Runnable{
 	// Following values are constants we should edit
-	private double runTime = 120.0;
+	private double runTime = 10.0;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private final int averageNumberOfFlightsPerDay = 2400;
 	
@@ -33,11 +33,13 @@ public class Arrivals implements Runnable{
 			double arrivalTime = getEstimate(meanInterArrivalTime);
 
 			if (timeElapsedTotal > runTime) {
-				System.out.println("Time done");
+				System.out.println("Arrivals has stopped generating new planes.");
 				running = false;
 				continue;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
-				boolean success = arrivalsQueue.offer(generatePlane());
+				Airplane plane = generatePlane();
+				plane.startWait();
+				boolean success = arrivalsQueue.offer(plane);
 				elapsedTime = timeElapsedTotal;
 				if (!success) {
 					rejectPlane();
