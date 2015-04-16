@@ -50,23 +50,23 @@ public abstract class ServiceArea {
 	
 	public void setServiceBehavior(ServiceBehavior serviceBehavior) {
 		this.serviceBehavior = serviceBehavior;
-	}
-	
-	private void sendAirplaneToDepartureQueue(Airplane plane) {
-		while (!Airport.getDepartureQueue().offer(plane));
-		System.out.println(plane.getName() + " added to the departure queue.");
-	}
+	}	
 	
 	public void startWait() {
 		startWait = Arrivals.getElapsedTime();
 	}
 	
-	public void stopWait(){
+	public void stopWait() {
 		stopWait = Arrivals.getElapsedTime();
 		totalWait += stopWait - startWait;
 	}
 	
 	public double getTotalWait() {
 		return totalWait;
+	}
+	
+	private void sendAirplaneToDepartureQueue(Airplane plane) {
+		while (!Airport.getDepartureQueue().offer(plane));
+		System.out.println(plane.getName() + " added to the departure queue.");
 	}
 }
