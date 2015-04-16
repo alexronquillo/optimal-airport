@@ -3,6 +3,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class Airport {
+	// Following values are constants we should edit
+	private static double simTime = 10.0;
+	private static double runTime = 5.0;
+	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
+	private final int averageNumberOfFlightsPerDay = 2400;
+	private static double elapsedTime = 0.0;
+	private static double startTime = System.currentTimeMillis();
 	
 	private static final int NUM_RUNWAYS = 2;
 	private static final int NUM_GATES = 5;
@@ -11,7 +18,6 @@ public class Airport {
 	private static final int LANDED_QUEUE_CAPACITY = 2;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 1;
 	private static int rejectedPlanes = 0;
-	private static long startTime = System.currentTimeMillis();
 	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static Gate[] gates = initializeGates();
 	private static CargoBay[] bays = initializeCargoBays();
@@ -22,7 +28,7 @@ public class Airport {
 	private static GroundMovementController groundMovementController = new GroundMovementController();
 
 	public static void main(String[] args) {
-		Thread arrivalsThread = new Thread(new Arrivals());
+		Thread arrivalsThread = new Thread(new Arrivals(runTime, simTime));
 		arrivalsThread.start();
 		
 		Thread atcThread = new Thread(airTrafficController);
@@ -92,7 +98,7 @@ public class Airport {
 	private static Gate[] initializeGates() {
 		Gate[] gates = new Gate[NUM_GATES];
 		for (int i = 0; i < NUM_GATES; ++i) {
-			gates[i] = new Gate("Gate " + i);
+			gates[i] = new Gate("Gate " + i, simTime);
 		}
 		return gates;
 	}
@@ -100,8 +106,16 @@ public class Airport {
 	private static CargoBay[] initializeCargoBays() {
 		CargoBay[] bays = new CargoBay[NUM_BAYS];
 		for (int i = 0; i < NUM_BAYS; ++i) {
-			bays[i] = new CargoBay("CargoBay " + i);
+			bays[i] = new CargoBay("CargoBay " + i, simTime);
 		}
 		return bays;
+	}
+	
+	public static double getElapsedTime(){
+		return elapsedTime;	
+	}
+
+	public static double getStartTime(){
+		return startTime;
 	}
 }

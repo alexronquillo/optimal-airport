@@ -1,6 +1,8 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
+
 public class Airplane implements Comparable<Airplane> {
 	public static enum Priority { HIGH, MEDIUM, LOW }
 	public static enum Size { SMALL, MEDIUM, LARGE }
@@ -12,11 +14,13 @@ public class Airplane implements Comparable<Airplane> {
 	private double startWait = 0;
 	private double stopWait = 0;
 	private double totalWait = 0;
+	private double landingAndTakeoffTime = 0;
 	
-	public Airplane(String name, Priority priority, Size size) {
+	public Airplane(String name, Priority priority, Size size, double landingAndTakeoffTime) {
 		this.name = name;		
 		this.priority = priority;
 		this.size = size;
+		this.landingAndTakeoffTime = landingAndTakeoffTime;
 	}
 	
 	public Priority getPriority() {
@@ -75,11 +79,11 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	public void startWait() {
-		startWait = Arrivals.getElapsedTime();
+		startWait = Airport.getElapsedTime();
 	}
 	
 	public void stopWait(){
-		stopWait = Arrivals.getElapsedTime();
+		stopWait = Airport.getElapsedTime();
 		totalWait += stopWait - startWait;
 	}
 	
@@ -88,32 +92,32 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	private long getTakeoffDelay() {
-		long takeoffDelay = 1000;
+		long takeoffDelay = (long) landingAndTakeoffTime * 1000;
 		switch (size) {
 			case SMALL:
-				takeoffDelay = 1000;
+				takeoffDelay = (long) landingAndTakeoffTime * 1000;
 				break;
 			case MEDIUM:
-				takeoffDelay = 2000;
+				takeoffDelay = (long)(landingAndTakeoffTime * 1.1 * 1000);
 				break;
 			case LARGE:
-				takeoffDelay = 3000;
+				takeoffDelay = (long) (landingAndTakeoffTime * 1.2 * 1000);
 				break;
 		}
 		return takeoffDelay;
 	}
 	
 	private long getLandingDelay() {
-		long landingDelay = 1000;
+		long landingDelay = (long) landingAndTakeoffTime * 1000;
 		switch (size) {
 			case SMALL:
-				landingDelay = 1000;
+				landingDelay = (long) landingAndTakeoffTime * 1000;
 				break;
 			case MEDIUM:
-				landingDelay = 2000;
+				landingDelay = (long) (landingAndTakeoffTime * 1.1 * 1000);
 				break;
 			case LARGE:
-				landingDelay = 3000;
+				landingDelay = (long) (landingAndTakeoffTime * 1.2 * 1000);
 				break;
 	}
 		return landingDelay;
