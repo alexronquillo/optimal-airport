@@ -74,6 +74,19 @@ public class Airplane implements Comparable<Airplane> {
 		return airplaneString;
 	}
 	
+	public void startWait() {
+		startWait = Arrivals.getElapsedTime();
+	}
+	
+	public void stopWait(){
+		stopWait = Arrivals.getElapsedTime();
+		totalWait += stopWait - startWait;
+	}
+	
+	public double getTotalWait() {
+		return totalWait;
+	}
+	
 	private long getTakeoffDelay() {
 		long takeoffDelay = 1000;
 		switch (size) {
@@ -109,19 +122,6 @@ public class Airplane implements Comparable<Airplane> {
 	@Override
 	public int compareTo(Airplane airplane) {
 		return this.priority.compareTo(airplane.getPriority());
-	}
-	
-	public void startWait() {
-		startWait = Arrivals.getElapsedTime();
-	}
-	
-	public void stopWait(){
-		stopWait = Arrivals.getElapsedTime();
-		totalWait += stopWait - startWait;
-	}
-	
-	public double getTotalWait() {
-		return totalWait;
 	}
 	
 }
