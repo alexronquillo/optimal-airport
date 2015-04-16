@@ -7,7 +7,8 @@ public class Arrivals implements Runnable{
 	private double runTime = 10.0;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private final int averageNumberOfFlightsPerDay = 2400;
-	
+	private final int NUMBER_OF_SIZES = Airplane.Size.values().length;
+	private final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
 	
 	// These values should never need editing
 	private double meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
@@ -15,8 +16,6 @@ public class Arrivals implements Runnable{
 	private static double startTime = 0.0;
 	private Random generator = new Random();
 	private int numberOfPlanes = 0;
-	private final int NUMBER_OF_SIZES = Airplane.Size.values().length;
-	private final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
 	private boolean running = true;
 	private BlockingQueue<Airplane> arrivalsQueue = null;
 	
