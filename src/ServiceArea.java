@@ -36,9 +36,7 @@ public abstract class ServiceArea {
 						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + Airport.getSimulationTime());
 						sendAirplaneToDepartureQueue(airplane);
 						airplane.startWait();
-						System.out.println(name + " starts cleaning procedure. Time: " + Airport.getSimulationTime());
-						cleanupServiceArea();
-						System.out.println(name + " finishes cleaning procedure. Time: " + Airport.getSimulationTime());						
+						System.out.println(name + " starts cleaning procedure. Time: " + Airport.getSimulationTime());						
 						available.set(true);
 						System.out.println(name + " is available. Time: " + Airport.getSimulationTime());
 						startWait();
@@ -58,8 +56,6 @@ public abstract class ServiceArea {
 		while (!Airport.getDepartureQueue().offer(plane));
 		System.out.println(plane.getName() + " added to the departure queue.");
 	}
-	
-	protected abstract void cleanupServiceArea() throws InterruptedException;
 	
 	public void startWait() {
 		startWait = Arrivals.getElapsedTime();
