@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 public class Arrivals implements Runnable{
 	// Following values are constants we should edit
-	private double runTime;
+	private double arrivalPeriod;
 	private double landingAndTakingOffFactor = 0.006944444;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private final int averageNumberOfFlightsPerDay = 2400;
@@ -15,7 +15,7 @@ public class Arrivals implements Runnable{
 	
 	// These values should never need editing
 	private int maxSizeOfArrivals = 0;
-	private double meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
+	private double meanInterArrivalTime = arrivalPeriod / averageNumberOfFlightsPerDay;
 	private static double elapsedTime = 0.0;
 	private static double startTime = 0.0;
 	private Random generator = new Random();
@@ -24,7 +24,7 @@ public class Arrivals implements Runnable{
 	private BlockingQueue<Airplane> arrivalsQueue = null;
 	
 	public Arrivals(double runTime) {
-		this.runTime = runTime;
+		this.arrivalPeriod = runTime;
 		this.arrivalsQueue = Airport.getArrivalsQueue();
 		meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
 		maxSizeOfArrivals = Airport.getArrivalsMaxSize();
@@ -37,7 +37,7 @@ public class Arrivals implements Runnable{
 		while (running) {
 			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
 			double arrivalTime = getEstimate(meanInterArrivalTime);
-			if (timeElapsedTotal > runTime) {
+			if (timeElapsedTotal > arrivalPeriod) {
 				running = false;
 				continue;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {

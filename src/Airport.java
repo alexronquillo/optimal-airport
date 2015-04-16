@@ -6,8 +6,8 @@ import javax.swing.JOptionPane;
 
 public class Airport {
 	// Following values are constants we should edit
-	private static double simTime = 10.0;
-	private static double runTime = 5.0;
+	private static double simulationPeriod = 1.0;
+	private static double arrivalPeriod = .25;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private final int averageNumberOfFlightsPerDay = 2400;
 	private static double elapsedTime = 0.0;
@@ -16,11 +16,11 @@ public class Airport {
 	private static double runwayTotal = 0;
 	private static double cumulativeSojournTime = 0;
 	private static final int NUM_RUNWAYS = 2;
-	private static final int NUM_GATES = 5;
-	private static final int NUM_BAYS = 5;
-	private static final int ARRIVALS_QUEUE_CAPACITY = 2;
-	private static final int LANDED_QUEUE_CAPACITY = 2;
-	private static final int DEPARTURE_QUEUE_CAPACITY = 1;
+	private static final int NUM_GATES = 10;
+	private static final int NUM_BAYS = 10;
+	private static final int ARRIVALS_QUEUE_CAPACITY = 150;
+	private static final int LANDED_QUEUE_CAPACITY = 6;
+	private static final int DEPARTURE_QUEUE_CAPACITY = 6;
 	private static int rejectedPlanes = 0;
 	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static Gate[] gates = initializeGates();
@@ -32,7 +32,7 @@ public class Airport {
 	private static GroundMovementController groundMovementController = new GroundMovementController();
 
 	public static void main(String[] args) {
-		Thread arrivalsThread = new Thread(new Arrivals(runTime));
+		Thread arrivalsThread = new Thread(new Arrivals(arrivalPeriod));
 		arrivalsThread.start();
 		
 		Thread atcThread = new Thread(airTrafficController);
@@ -44,7 +44,7 @@ public class Airport {
 		boolean running = true;
 		while (running) {
 			elapsedTime = (System.currentTimeMillis()-startTime)/1000;
-			if (elapsedTime > simTime) {
+			if (elapsedTime > simulationPeriod) {
 				System.out.println("Simulation has completed execution.");
 				running = false;
 				continue;
@@ -64,7 +64,7 @@ public class Airport {
 		double averageWaitTime = airTrafficController.getAverageWaitTime();
 		
 		//get average runway utilization
-		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simTime;
+		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simulationPeriod;
 		
 		//get average gate utilization
 	    average = 0;
@@ -72,7 +72,7 @@ public class Airport {
 		     	average += g.getTotalWait();
 		}
 		average /= NUM_GATES;
-		double gateUtilization = 1- (average / simTime);
+		double gateUtilization = 1- (average / simulationPeriod);
 		
 		//get average bay utilization
 		average = 0;
@@ -80,7 +80,7 @@ public class Airport {
 	     	average += b.getTotalWait();
 		}
 		average /= NUM_BAYS;
-		double bayUtilization = 1- (average / simTime);
+		double bayUtilization = 1- (average / simulationPeriod);
 		
 		//get rejected planes
 		rejectedPlanes = arrivalsQueue.size() + getRejectedPlanes();
@@ -161,7 +161,7 @@ public class Airport {
 	private static Gate[] initializeGates() {
 		Gate[] gates = new Gate[NUM_GATES];
 		for (int i = 0; i < NUM_GATES; ++i) {
-			gates[i] = new Gate("Gate " + i, simTime);
+			gates[i] = new Gate("Gate " + i, simulationPeriod);
 		}
 		return gates;
 	}
@@ -169,7 +169,7 @@ public class Airport {
 	private static CargoBay[] initializeCargoBays() {
 		CargoBay[] bays = new CargoBay[NUM_BAYS];
 		for (int i = 0; i < NUM_BAYS; ++i) {
-			bays[i] = new CargoBay("CargoBay " + i, simTime);
+			bays[i] = new CargoBay("CargoBay " + i, simulationPeriod);
 		}
 		return bays;
 	}
@@ -190,7 +190,7 @@ public class Airport {
 	}
 	
 	public double getSimTime () {
-		return simTime;
+		return simulationPeriod;
 	}
 	
 	public static int getArrivalsMaxSize() {
