@@ -58,7 +58,7 @@ public class Airport {
 		double average = 0;
 		
 		//get average sojourn time
-		cumulativeSojournTime /=airTrafficController.numberOfPlanes;
+		cumulativeSojournTime /= airTrafficController.getNumberOfPlanes();
 		
 		//get average wait time
 		double averageWaitTime = airTrafficController.getAverageWaitTime();
@@ -93,7 +93,7 @@ public class Airport {
 	                       "Average Bay Utilization: " + bayUtilization + "\n" +
 	                       "Average Wait Time: " + averageWaitTime + "\n" +
 	                       "Rejected planes: " + rejectedPlanes + "\n" + 
-	                       "Planes Serviced: " + airTrafficController.numberOfPlanes + "\n" +
+	                       "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
 	                       "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
 	                       "Average Runway Utilization: " + runwayUtil + "\n" +
                            "=================================================");

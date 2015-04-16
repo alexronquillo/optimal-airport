@@ -1,28 +1,45 @@
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AirTrafficController implements Runnable {	
-	private static AtomicInteger landingPlanes = new AtomicInteger(0);
-	private static double airplaneWaitTimeTotal = 0;
-	public static int numberOfPlanes = 0;
+	private AtomicInteger landingPlanes = new AtomicInteger(0);
+	private double airplaneWaitTimeTotal = 0;
+	private int numberOfPlanes = 0;
+	private AtomicBoolean nextAttemptIsLanding = new AtomicBoolean(true);
 	
 	@Override
 	public void run() {
 		while (true) {
 			if (airportHasRunway()) {
-				if (airplaneCanLand()) {
-					Airplane airplane = Airport.getArrivalsQueue().poll();
-					System.out.println("Air Traffic Controller signals " + airplane.getName() + " to land. Time: " + Airport.getSimulationTime());	
-					airplane.stopWait();
-					signalLanding(airplane);					
-					landingPlanes.set(landingPlanes.get() + 1);
-				} else if (hasPlanesAwaitingTakeoff()) {
-					Airplane airplane = Airport.getDepartureQueue().poll(); 
-					airplane.stopWait();
-					System.out.println("Air Traffic Controller signals " + airplane.getName() + " to takeoff. Time: " + Airport.getSimulationTime());
-					signalTakeoff(airplane);
+				if (nextAttemptIsLanding.get()) {
+					// Attempt landing
+					if (airplaneCanLand()) {
+						Airplane airplane = Airport.getArrivalsQueue().poll();
+						System.out.println("Air Traffic Controller signals " + airplane.getName() + " to land. Time: " + Airport.getSimulationTime());	
+						airplane.stopWait();
+						signalLanding(airplane);					
+						landingPlanes.set(landingPlanes.get() + 1);
+					}	
+					
+					nextAttemptIsLanding.set(false);
+				} else {
+					// Attempt departure
+					if (hasPlanesAwaitingTakeoff()) {
+						Airplane airplane = Airport.getDepartureQueue().poll(); 
+						airplane.stopWait();
+						System.out.println("Air Traffic Controller signals " + airplane.getName() + " to takeoff. Time: " + Airport.getSimulationTime());
+						signalTakeoff(airplane);
+					}
+					
+					nextAttemptIsLanding.set(true);
 				}
 			} 
 		}
+	}
+	
+	public int getNumberOfPlanes()
+	{
+		return numberOfPlanes;
 	}
 	
 	public void signalLanded() {
