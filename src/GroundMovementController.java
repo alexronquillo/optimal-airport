@@ -56,6 +56,7 @@ public class GroundMovementController implements Runnable {
 	private static CargoBay getCargoBay() throws NullServiceAreaException {
 		for (CargoBay bay : Airport.getBays()) {
 			if (bay.isAvailable()) {
+				bay.setAvailable(false);
 				return bay;
 			}
 		}
