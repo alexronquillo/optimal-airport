@@ -113,13 +113,13 @@ public class Airplane implements Comparable<Airplane> {
 		long takeoffDelay = (long) landingAndTakeoffTime * 1000;
 		switch (size) {
 			case SMALL:
-				takeoffDelay = (long) landingAndTakeoffTime * 1000;
+				takeoffDelay = (long) (landingAndTakeoffTime * 1.1 * 1000);
 				break;
 			case MEDIUM:
-				takeoffDelay = (long)(landingAndTakeoffTime * 1.1 * 1000);
+				takeoffDelay = (long)(landingAndTakeoffTime * 1.2 * 1000);
 				break;
 			case LARGE:
-				takeoffDelay = (long) (landingAndTakeoffTime * 1.2 * 1000);
+				takeoffDelay = (long) (landingAndTakeoffTime * 1.3 * 1000);
 				break;
 		}
 		return takeoffDelay;
@@ -129,13 +129,13 @@ public class Airplane implements Comparable<Airplane> {
 		long landingDelay = (long) landingAndTakeoffTime * 1000;
 		switch (size) {
 			case SMALL:
-				landingDelay = (long) landingAndTakeoffTime * 1000;
-				break;
-			case MEDIUM:
 				landingDelay = (long) (landingAndTakeoffTime * 1.1 * 1000);
 				break;
-			case LARGE:
+			case MEDIUM:
 				landingDelay = (long) (landingAndTakeoffTime * 1.2 * 1000);
+				break;
+			case LARGE:
+				landingDelay = (long) (landingAndTakeoffTime * 1.3 * 1000);
 				break;
 	}
 		return landingDelay;
