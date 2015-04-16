@@ -13,13 +13,13 @@ public class PassengerPlaneServiceBehavior implements ServiceBehavior {
 	public long getServiceTime(Airplane airplane, double serviceTime) {		
 		switch (airplane.getSize()) {
 			case SMALL:
-				return (long)(serviceTime * .8);
+				return (long)(serviceTime * .8 * 1000);
 			case MEDIUM:
 				return (long) serviceTime;				
 			case LARGE:
-				return (long)(serviceTime * 1.2);
+				return (long)(serviceTime * 1.2 * 1000);
 			default:
-				return (long)(serviceTime * 1.5);
+				return (long)(serviceTime * 1.5 * 1000);
 		}
 	}
 }

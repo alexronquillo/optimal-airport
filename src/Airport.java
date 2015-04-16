@@ -2,6 +2,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import javax.swing.JOptionPane;
+
 public class Airport {
 	// Following values are constants we should edit
 	private static double simTime = 10.0;
@@ -11,6 +13,8 @@ public class Airport {
 	private static double elapsedTime = 0.0;
 	private static double startTime = System.currentTimeMillis();
 	
+	private static double runwayTotal = 0;
+	private static double cumulativeSojournTime = 0;
 	private static final int NUM_RUNWAYS = 2;
 	private static final int NUM_GATES = 5;
 	private static final int NUM_BAYS = 5;
@@ -35,7 +39,66 @@ public class Airport {
 		atcThread.start();
 		
 		Thread gmcThread = new Thread(groundMovementController);
-		gmcThread.start();		
+		gmcThread.start();	
+		
+		boolean running = true;
+		while (running) {
+			elapsedTime = (System.currentTimeMillis()-startTime)/1000;
+			if (elapsedTime > simTime) {
+				System.out.println("Simulation has completed execution.");
+				running = false;
+				continue;
+			}
+		}
+		closingProcedures();
+	}
+
+	//do closing things
+	private static void closingProcedures() {
+		double average = 0;
+		
+		//get average sojourn time
+		cumulativeSojournTime /=airTrafficController.numberOfPlanes;
+		
+		//get average wait time
+		double averageWaitTime = airTrafficController.getAverageWaitTime();
+		
+		//get average runway utilization
+		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simTime;
+		
+		//get average gate utilization
+	    average = 0;
+		for (Gate g : gates) {
+		     	average += g.getTotalWait();
+		}
+		average /= NUM_GATES;
+		double gateUtilization = 1- (average / simTime);
+		
+		//get average bay utilization
+		average = 0;
+		for (CargoBay b : bays) {
+	     	average += b.getTotalWait();
+		}
+		average /= NUM_BAYS;
+		double bayUtilization = 1- (average / simTime);
+		
+		//get rejected planes
+		rejectedPlanes = arrivalsQueue.size();
+		
+		//output all these things
+		System.out.println("=================================================\n"+
+	                       "Optimal Airport Simulation\n" + 
+				           "Simulation has completed. Results Follow:\n" +
+	                       "Average Gate Utilization: " + gateUtilization + "\n" + 
+	                       "Average Bay Utilization: " + bayUtilization + "\n" +
+	                       "Average Wait Time: " + averageWaitTime + "\n" +
+	                       "Rejected planes: " + rejectedPlanes + "\n" + 
+	                       "Planes Serviced: " + airTrafficController.numberOfPlanes + "\n" +
+	                       "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
+	                       "Average Runway Utilization: " + runwayUtil + "\n" +
+                           "=================================================");
+		
+		System.exit(0);
 	}
 
 	public static double getSimulationTime() {
@@ -117,5 +180,12 @@ public class Airport {
 
 	public static double getStartTime(){
 		return startTime;
+	}
+	public static void addMySTime(double time) {
+		cumulativeSojournTime += time;
+	}
+	
+	public static void addRunwayTotal(double d) {
+		runwayTotal += d;
 	}
 }

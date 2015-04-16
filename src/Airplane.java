@@ -16,11 +16,15 @@ public class Airplane implements Comparable<Airplane> {
 	private double totalWait = 0;
 	private double landingAndTakeoffTime = 0;
 	
+	private long timeEnteredSystem = 0;
+	private long timeExitedSystem = 0;
+	
 	public Airplane(String name, Priority priority, Size size, double landingAndTakeoffTime) {
 		this.name = name;		
 		this.priority = priority;
 		this.size = size;
 		this.landingAndTakeoffTime = landingAndTakeoffTime;
+		this.timeEnteredSystem = System.currentTimeMillis();
 	}
 	
 	public Priority getPriority() {
@@ -38,11 +42,14 @@ public class Airplane implements Comparable<Airplane> {
 	public void land() {
 		System.out.println(name + " starts landing procedure. Time: " + Airport.getSimulationTime());
 		runway = Airport.getRunways().poll();
+		runway.startUse();
+
 		final Timer landingTimer = new Timer();
 		landingTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
 				Airport.getRunways().offer(runway);
+				runway.stopUse();
 				Airport.getLandedQueue().offer(Airplane.this);
 				Airport.getAirTrafficController().signalLanded();
 				System.out.println(name + " landed. Time: " + Airport.getSimulationTime());
@@ -56,17 +63,28 @@ public class Airplane implements Comparable<Airplane> {
 	public void takeoff() {
 		System.out.println(name + " starts takeoff procedure. Time: " + Airport.getSimulationTime());
 		runway = Airport.getRunways().poll();
+		runway.startUse();
+
 		final Timer takeoffTimer = new Timer();
 		takeoffTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
 				Airport.getRunways().offer(runway);
+				runway.stopUse();
 				System.out.println(name + " took off. Time: " + Airport.getSimulationTime());
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());
 		
+		timeExitedSystem = System.currentTimeMillis();
+		Airport.addMySTime(getSojournTime());
 		System.out.println("total wait time of " + name + ": " + totalWait);
+		System.out.println("Sojourn time of " + name + ": " + getSojournTime());
+		
+	}
+	
+	private double getSojournTime() {
+		return (timeExitedSystem - timeEnteredSystem)/1000;
 	}
 	
 	@Override

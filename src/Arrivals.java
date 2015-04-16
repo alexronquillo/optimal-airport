@@ -37,9 +37,7 @@ public class Arrivals implements Runnable{
 		while (running) {
 			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
 			double arrivalTime = getEstimate(meanInterArrivalTime);
-
 			if (timeElapsedTotal > runTime) {
-				System.out.println("Arrivals has stopped generating new planes.");
 				running = false;
 				continue;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
@@ -52,6 +50,8 @@ public class Arrivals implements Runnable{
 				}
 			}
 		}
+		System.out.println("Arrivals has stopped generating new planes.");
+
 	}
 	
 	//makes a plane
