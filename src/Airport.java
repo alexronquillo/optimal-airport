@@ -32,7 +32,7 @@ public class Airport {
 	private static GroundMovementController groundMovementController = new GroundMovementController();
 
 	public static void main(String[] args) {
-		Thread arrivalsThread = new Thread(new Arrivals(runTime, simTime));
+		Thread arrivalsThread = new Thread(new Arrivals(runTime));
 		arrivalsThread.start();
 		
 		Thread atcThread = new Thread(airTrafficController);
@@ -83,7 +83,7 @@ public class Airport {
 		double bayUtilization = 1- (average / simTime);
 		
 		//get rejected planes
-		rejectedPlanes = arrivalsQueue.size();
+		rejectedPlanes = arrivalsQueue.size() + getRejectedPlanes();
 		
 		//output all these things
 		System.out.println("=================================================\n"+
@@ -187,5 +187,13 @@ public class Airport {
 	
 	public static void addRunwayTotal(double d) {
 		runwayTotal += d;
+	}
+	
+	public double getSimTime () {
+		return simTime;
+	}
+	
+	public static int getArrivalsMaxSize() {
+		return ARRIVALS_QUEUE_CAPACITY;
 	}
 }
