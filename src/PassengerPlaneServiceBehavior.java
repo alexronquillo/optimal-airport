@@ -1,25 +1,25 @@
 
 public class PassengerPlaneServiceBehavior implements ServiceBehavior {
 	@Override
-	public void service(Airplane airplane) throws InterruptedException, InvalidAirplaneTypeException {	
+	public void service(Airplane airplane, double serviceTime) throws InterruptedException, InvalidAirplaneTypeException {	
 		if (airplane instanceof PassengerPlane) {			
-			Thread.sleep(getServiceTime(airplane));			
+			Thread.sleep(getServiceTime(airplane, serviceTime));			
 		} else {
 			throw new InvalidAirplaneTypeException("Can only service a passenger plane");
 		}
 	}
 	
 	@Override
-	public long getServiceTime(Airplane airplane) {		
+	public long getServiceTime(Airplane airplane, double serviceTime) {		
 		switch (airplane.getSize()) {
 			case SMALL:
-				return 1000L;
+				return (long)(serviceTime * .8 * 1000);
 			case MEDIUM:
-				return 2000L;				
+				return (long) serviceTime;				
 			case LARGE:
-				return 3000L;
+				return (long)(serviceTime * 1.2 * 1000);
 			default:
-				return 4000L;
+				return (long)(serviceTime * 1.5 * 1000);
 		}
 	}
 }

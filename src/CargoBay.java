@@ -1,6 +1,6 @@
 
 public class CargoBay extends ServiceArea {
-	public CargoBay(String name) {
-		super(name, new CargoPlaneServiceBehavior());
+	public CargoBay(String name, double simTime) {
+		super(name, new CargoPlaneServiceBehavior(), simTime);
 	}
 }

@@ -1,6 +1,8 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
+
 public class Airplane implements Comparable<Airplane> {
 	public static enum Priority { HIGH, MEDIUM, LOW }
 	public static enum Size { SMALL, MEDIUM, LARGE }
@@ -12,11 +14,17 @@ public class Airplane implements Comparable<Airplane> {
 	private double startWait = 0;
 	private double stopWait = 0;
 	private double totalWait = 0;
+	private double landingAndTakeoffTime = 0;
 	
-	public Airplane(String name, Priority priority, Size size) {
+	private long timeEnteredSystem = 0;
+	private long timeExitedSystem = 0;
+	
+	public Airplane(String name, Priority priority, Size size, double landingAndTakeoffTime) {
 		this.name = name;		
 		this.priority = priority;
 		this.size = size;
+		this.landingAndTakeoffTime = landingAndTakeoffTime;
+		this.timeEnteredSystem = System.currentTimeMillis();
 	}
 	
 	public Priority getPriority() {
@@ -34,11 +42,14 @@ public class Airplane implements Comparable<Airplane> {
 	public void land() {
 		System.out.println(name + " starts landing procedure. Time: " + Airport.getSimulationTime());
 		runway = Airport.getRunways().poll();
+		runway.startUse();
+
 		final Timer landingTimer = new Timer();
 		landingTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
 				Airport.getRunways().offer(runway);
+				runway.stopUse();
 				Airport.getLandedQueue().offer(Airplane.this);
 				Airport.getAirTrafficController().signalLanded();
 				System.out.println(name + " landed. Time: " + Airport.getSimulationTime());
@@ -52,17 +63,28 @@ public class Airplane implements Comparable<Airplane> {
 	public void takeoff() {
 		System.out.println(name + " starts takeoff procedure. Time: " + Airport.getSimulationTime());
 		runway = Airport.getRunways().poll();
+		runway.startUse();
+
 		final Timer takeoffTimer = new Timer();
 		takeoffTimer.schedule(new TimerTask () {
 			@Override
 			public void run() {
 				Airport.getRunways().offer(runway);
+				runway.stopUse();
 				System.out.println(name + " took off. Time: " + Airport.getSimulationTime());
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());
 		
+		timeExitedSystem = System.currentTimeMillis();
+		Airport.addMySTime(getSojournTime());
 		System.out.println("total wait time of " + name + ": " + totalWait);
+		System.out.println("Sojourn time of " + name + ": " + getSojournTime());
+		
+	}
+	
+	private double getSojournTime() {
+		return (timeExitedSystem - timeEnteredSystem)/1000;
 	}
 	
 	@Override
@@ -75,11 +97,11 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	public void startWait() {
-		startWait = Arrivals.getElapsedTime();
+		startWait = Airport.getElapsedTime();
 	}
 	
 	public void stopWait(){
-		stopWait = Arrivals.getElapsedTime();
+		stopWait = Airport.getElapsedTime();
 		totalWait += stopWait - startWait;
 	}
 	
@@ -88,32 +110,32 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	private long getTakeoffDelay() {
-		long takeoffDelay = 1000;
+		long takeoffDelay = (long) landingAndTakeoffTime * 1000;
 		switch (size) {
 			case SMALL:
-				takeoffDelay = 1000;
+				takeoffDelay = (long) (landingAndTakeoffTime * 1.1 * 1000);
 				break;
 			case MEDIUM:
-				takeoffDelay = 2000;
+				takeoffDelay = (long)(landingAndTakeoffTime * 1.2 * 1000);
 				break;
 			case LARGE:
-				takeoffDelay = 3000;
+				takeoffDelay = (long) (landingAndTakeoffTime * 1.3 * 1000);
 				break;
 		}
 		return takeoffDelay;
 	}
 	
 	private long getLandingDelay() {
-		long landingDelay = 1000;
+		long landingDelay = (long) landingAndTakeoffTime * 1000;
 		switch (size) {
 			case SMALL:
-				landingDelay = 1000;
+				landingDelay = (long) (landingAndTakeoffTime * 1.1 * 1000);
 				break;
 			case MEDIUM:
-				landingDelay = 2000;
+				landingDelay = (long) (landingAndTakeoffTime * 1.2 * 1000);
 				break;
 			case LARGE:
-				landingDelay = 3000;
+				landingDelay = (long) (landingAndTakeoffTime * 1.3 * 1000);
 				break;
 	}
 		return landingDelay;

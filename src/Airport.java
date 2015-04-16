@@ -2,8 +2,19 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import javax.swing.JOptionPane;
+
 public class Airport {
+	// Following values are constants we should edit
+	private static double simTime = 10.0;
+	private static double runTime = 5.0;
+	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
+	private final int averageNumberOfFlightsPerDay = 2400;
+	private static double elapsedTime = 0.0;
+	private static double startTime = System.currentTimeMillis();
 	
+	private static double runwayTotal = 0;
+	private static double cumulativeSojournTime = 0;
 	private static final int NUM_RUNWAYS = 2;
 	private static final int NUM_GATES = 5;
 	private static final int NUM_BAYS = 5;
@@ -11,7 +22,6 @@ public class Airport {
 	private static final int LANDED_QUEUE_CAPACITY = 2;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 1;
 	private static int rejectedPlanes = 0;
-	private static long startTime = System.currentTimeMillis();
 	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static Gate[] gates = initializeGates();
 	private static CargoBay[] bays = initializeCargoBays();
@@ -22,14 +32,73 @@ public class Airport {
 	private static GroundMovementController groundMovementController = new GroundMovementController();
 
 	public static void main(String[] args) {
-		Thread arrivalsThread = new Thread(new Arrivals());
+		Thread arrivalsThread = new Thread(new Arrivals(runTime));
 		arrivalsThread.start();
 		
 		Thread atcThread = new Thread(airTrafficController);
 		atcThread.start();
 		
 		Thread gmcThread = new Thread(groundMovementController);
-		gmcThread.start();		
+		gmcThread.start();	
+		
+		boolean running = true;
+		while (running) {
+			elapsedTime = (System.currentTimeMillis()-startTime)/1000;
+			if (elapsedTime > simTime) {
+				System.out.println("Simulation has completed execution.");
+				running = false;
+				continue;
+			}
+		}
+		closingProcedures();
+	}
+
+	//do closing things
+	private static void closingProcedures() {
+		double average = 0;
+		
+		//get average sojourn time
+		cumulativeSojournTime /=airTrafficController.numberOfPlanes;
+		
+		//get average wait time
+		double averageWaitTime = airTrafficController.getAverageWaitTime();
+		
+		//get average runway utilization
+		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simTime;
+		
+		//get average gate utilization
+	    average = 0;
+		for (Gate g : gates) {
+		     	average += g.getTotalWait();
+		}
+		average /= NUM_GATES;
+		double gateUtilization = 1- (average / simTime);
+		
+		//get average bay utilization
+		average = 0;
+		for (CargoBay b : bays) {
+	     	average += b.getTotalWait();
+		}
+		average /= NUM_BAYS;
+		double bayUtilization = 1- (average / simTime);
+		
+		//get rejected planes
+		rejectedPlanes = arrivalsQueue.size() + getRejectedPlanes();
+		
+		//output all these things
+		System.out.println("=================================================\n"+
+	                       "Optimal Airport Simulation\n" + 
+				           "Simulation has completed. Results Follow:\n" +
+	                       "Average Gate Utilization: " + gateUtilization + "\n" + 
+	                       "Average Bay Utilization: " + bayUtilization + "\n" +
+	                       "Average Wait Time: " + averageWaitTime + "\n" +
+	                       "Rejected planes: " + rejectedPlanes + "\n" + 
+	                       "Planes Serviced: " + airTrafficController.numberOfPlanes + "\n" +
+	                       "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
+	                       "Average Runway Utilization: " + runwayUtil + "\n" +
+                           "=================================================");
+		
+		System.exit(0);
 	}
 
 	public static double getSimulationTime() {
@@ -92,7 +161,7 @@ public class Airport {
 	private static Gate[] initializeGates() {
 		Gate[] gates = new Gate[NUM_GATES];
 		for (int i = 0; i < NUM_GATES; ++i) {
-			gates[i] = new Gate("Gate " + i);
+			gates[i] = new Gate("Gate " + i, simTime);
 		}
 		return gates;
 	}
@@ -100,8 +169,31 @@ public class Airport {
 	private static CargoBay[] initializeCargoBays() {
 		CargoBay[] bays = new CargoBay[NUM_BAYS];
 		for (int i = 0; i < NUM_BAYS; ++i) {
-			bays[i] = new CargoBay("CargoBay " + i);
+			bays[i] = new CargoBay("CargoBay " + i, simTime);
 		}
 		return bays;
+	}
+	
+	public static double getElapsedTime(){
+		return elapsedTime;	
+	}
+
+	public static double getStartTime(){
+		return startTime;
+	}
+	public static void addMySTime(double time) {
+		cumulativeSojournTime += time;
+	}
+	
+	public static void addRunwayTotal(double d) {
+		runwayTotal += d;
+	}
+	
+	public double getSimTime () {
+		return simTime;
+	}
+	
+	public static int getArrivalsMaxSize() {
+		return ARRIVALS_QUEUE_CAPACITY;
 	}
 }

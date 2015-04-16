@@ -2,6 +2,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class AirTrafficController implements Runnable {	
 	private static AtomicInteger landingPlanes = new AtomicInteger(0);
+	private static double airplaneWaitTimeTotal = 0;
+	public static int numberOfPlanes = 0;
 	
 	@Override
 	public void run() {
@@ -48,6 +50,12 @@ public class AirTrafficController implements Runnable {
 	}
 	
 	private void signalTakeoff(Airplane airplane) {
+		airplaneWaitTimeTotal += airplane.getTotalWait();
+		numberOfPlanes++;
 		airplane.takeoff();
 	}	
+	
+	public double getAverageWaitTime() {
+		return airplaneWaitTimeTotal / numberOfPlanes;
+	}
 }

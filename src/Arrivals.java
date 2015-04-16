@@ -1,16 +1,20 @@
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
+import javax.swing.JOptionPane;
+
 
 public class Arrivals implements Runnable{
 	// Following values are constants we should edit
-	private double runTime = 10.0;
+	private double runTime;
+	private double landingAndTakingOffFactor = 0.006944444;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private final int averageNumberOfFlightsPerDay = 2400;
 	private final int NUMBER_OF_SIZES = Airplane.Size.values().length;
 	private final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
 	
 	// These values should never need editing
+	private int maxSizeOfArrivals = 0;
 	private double meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
 	private static double elapsedTime = 0.0;
 	private static double startTime = 0.0;
@@ -19,8 +23,11 @@ public class Arrivals implements Runnable{
 	private boolean running = true;
 	private BlockingQueue<Airplane> arrivalsQueue = null;
 	
-	public Arrivals() {
+	public Arrivals(double runTime) {
+		this.runTime = runTime;
 		this.arrivalsQueue = Airport.getArrivalsQueue();
+		meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
+		maxSizeOfArrivals = Airport.getArrivalsMaxSize();
 	}
 	
 	@Override
@@ -30,21 +37,24 @@ public class Arrivals implements Runnable{
 		while (running) {
 			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
 			double arrivalTime = getEstimate(meanInterArrivalTime);
-
 			if (timeElapsedTotal > runTime) {
-				System.out.println("Arrivals has stopped generating new planes.");
 				running = false;
 				continue;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
 				Airplane plane = generatePlane();
 				plane.startWait();
-				boolean success = arrivalsQueue.offer(plane);
+				boolean success = false;
+				if (maxSizeOfArrivals >= arrivalsQueue.size()){
+					success = arrivalsQueue.offer(plane);
+				}
 				elapsedTime = timeElapsedTotal;
 				if (!success) {
-					rejectPlane();
+					rejectPlane(plane);
 				}
 			}
 		}
+		System.out.println("Arrivals has stopped generating new planes.");
+
 	}
 	
 	//makes a plane
@@ -54,14 +64,15 @@ public class Arrivals implements Runnable{
 		
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
 			System.out.println(name + " with " + getPriority() + " priority " +  "and " + getSize() + " size " + "arrives. Time: " + Airport.getSimulationTime());
-			return new CargoPlane(name, getPriority(), getSize());
+			return new CargoPlane(name, getPriority(), getSize(), Airport.getSimulationTime() * landingAndTakingOffFactor);
 		} else {
 			System.out.println(name + " with " + getPriority() + " priority " +  "and " + getSize() + " size " + "arrives. Time: " + Airport.getSimulationTime());
-			return new PassengerPlane(name, getPriority(), getSize());
+			return new PassengerPlane(name, getPriority(), getSize(), Airport.getSimulationTime() * landingAndTakingOffFactor);
 		}
 	}
 	
-	public void rejectPlane() {
+	public void rejectPlane(Airplane plane ) {
+		System.out.println(plane.getName() + " rejected.");
 		Airport.setRejectedPlanes(Airport.getRejectedPlanes() + 1);
 	}
 	
@@ -85,15 +96,5 @@ public class Arrivals implements Runnable{
 		double salt = generator.nextDouble() + .75;
 		
 		return mean * salt;
-	}
-	
-	public static double getElapsedTime(){
-		return elapsedTime;
-		
-	}
-
-	public static double getStartTime(){
-		return startTime;
-		
 	}
 }
