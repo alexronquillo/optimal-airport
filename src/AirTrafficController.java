@@ -1,4 +1,4 @@
-public class AirTrafficController implements AirportRunnable {	
+public class AirTrafficController implements Runnable {	
 	private volatile int landingPlanes = 0;
 	private double airplaneWaitTimeTotal = 0;
 	private int numberOfPlanes = 0;
