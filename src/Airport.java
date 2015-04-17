@@ -7,10 +7,10 @@ import javax.swing.JOptionPane;
 
 public class Airport {
 	// Following values are constants we should edit
+	// private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
+	// private final int averageNumberOfFlightsPerDay = 2400;
 	private static double simulationPeriod = 10;
-	private static double arrivalPeriod = 5;
-	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
-	private final int averageNumberOfFlightsPerDay = 2400;
+	private static double arrivalPeriod = 5;	
 	private static double elapsedTime = 0.0;
 	private static double startTime = System.currentTimeMillis();
 	
@@ -37,13 +37,13 @@ public class Airport {
 	private static double totalDepartureQueueTime = 0;
 	
 	public static void main(String[] args) {
-		Thread arrivalsThread = new Thread(new Arrivals(arrivalPeriod));
+		AirportThread arrivalsThread = new AirportThread(new Arrivals(arrivalPeriod));
 		arrivalsThread.start();
 		
-		Thread atcThread = new Thread(airTrafficController);
+		AirportThread atcThread = new AirportThread(airTrafficController);
 		atcThread.start();
 		
-		Thread gmcThread = new Thread(groundMovementController);
+		AirportThread gmcThread = new AirportThread(groundMovementController);
 		gmcThread.start();	
 		
 		boolean running = true;
@@ -52,6 +52,9 @@ public class Airport {
 			if (elapsedTime > simulationPeriod) {
 				System.out.println("Simulation has completed execution.");
 				running = false;
+				arrivalsThread.terminate();
+				atcThread.terminate();
+				gmcThread.terminate();
 				continue;
 			}
 		}
@@ -75,7 +78,7 @@ public class Airport {
 		     	average += g.getTotalWait();
 		}
 		average /= NUM_GATES;
-		double gateUtilization = 1- (average / simulationPeriod);
+		double gateUtilization = 1 - (average / simulationPeriod);
 		
 		//get average bay utilization
 		average = 0;
@@ -157,7 +160,7 @@ public class Airport {
 	private static BlockingQueue<Runway> initializeRunways() {
 		BlockingQueue<Runway> runways = new ArrayBlockingQueue<>(NUM_RUNWAYS);
 		for (int i = 0; i < NUM_RUNWAYS; ++i) {
-			runways.add(new Runway());
+			runways.add(new Runway("Runway " + (i + 1)));
 		}
 		
 		return runways;
