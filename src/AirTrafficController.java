@@ -4,26 +4,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JOptionPane;
 
 public class AirTrafficController implements Runnable {	
-	private AtomicInteger landingPlanes = new AtomicInteger(0);
+	private volatile int landingPlanes = 0;
 	private double airplaneWaitTimeTotal = 0;
 	private int numberOfPlanes = 0;
-	private AtomicBoolean nextAttemptIsLanding = new AtomicBoolean(true);
+	private volatile boolean nextAttemptIsLanding = true;
+	private volatile boolean running = true;
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (running) {
 			if (airportHasRunway()) {
-				if (nextAttemptIsLanding.get()) {
+				if (nextAttemptIsLanding) {
 					// Attempt landing
 					if (airplaneCanLand()) {
 						Airplane airplane = Airport.getArrivalsQueue().poll();
 						System.out.println("Air Traffic Controller signals " + airplane.getName() + " to land. Time: " + Airport.getSimulationTime());	
 						airplane.stopWait();
 						signalLanding(airplane);					
-						landingPlanes.set(landingPlanes.get() + 1);
+						++landingPlanes;
 					}	
 					
-					nextAttemptIsLanding.set(false);
+					nextAttemptIsLanding = false;
 				} else {
 					// Attempt departure
 					if (hasPlanesAwaitingTakeoff()) {
@@ -34,7 +35,7 @@ public class AirTrafficController implements Runnable {
 						signalTakeoff(airplane);
 					}
 					
-					nextAttemptIsLanding.set(true);
+					nextAttemptIsLanding = true;
 				}
 			} 
 		}
@@ -46,11 +47,19 @@ public class AirTrafficController implements Runnable {
 	}
 	
 	public void signalLanded() {
-		landingPlanes.set(landingPlanes.get() - 1);
+		--landingPlanes;
+	}
+
+	public void terminate() {
+		this.running = false;
+	}
+
+	public double getAverageWaitTime() {
+		return airplaneWaitTimeTotal / numberOfPlanes;
 	}
 	
 	private boolean airplaneCanLand() {		
-		return (Airport.getLandedQueue().remainingCapacity() - landingPlanes.get() > 0) && hasArrivals();
+		return (Airport.getLandedQueue().remainingCapacity() - landingPlanes > 0) && hasArrivals();
 	}
 	
 	private boolean airportHasRunway() {
@@ -73,9 +82,5 @@ public class AirTrafficController implements Runnable {
 		airplaneWaitTimeTotal += airplane.getTotalWait();
 		numberOfPlanes++;
 		airplane.takeoff();
-	}	
-	
-	public double getAverageWaitTime() {
-		return airplaneWaitTimeTotal / numberOfPlanes;
-	}
+	}		
 }
