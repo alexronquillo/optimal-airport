@@ -1,9 +1,10 @@
-public class GroundMovementController implements Runnable {
-
+public class GroundMovementController implements AirportRunnable {
+	private volatile boolean running = true;
+	
 	@Override
 	public void run() {
 		try {
-			while (true) {
+			while (running) {
 				if (!Airport.getLandedQueue().isEmpty()) {
 					if (nextIsPassengerPlane()) {
 						while (!gateAvailable());
@@ -23,6 +24,11 @@ public class GroundMovementController implements Runnable {
 		} catch (NullServiceAreaException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void terminate() {
+		running = false;
 	}
 
 	private static boolean gateAvailable() {
