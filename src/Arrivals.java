@@ -94,8 +94,10 @@ public class Arrivals implements Runnable {
 	
 	//get a values anywhere from 75% to 125% mean value
 	public double getEstimate(double mean) {
-		double salt = generator.nextDouble() + .75;
-		
+		int max = 25;
+		int min = 0;
+		double salt = .88 + ((double)generator.nextInt((max-min)+1) + min) / 100;
+		//JOptionPane.showMessageDialog(null, mean * salt);
 		return mean * salt;
 	}
 }
