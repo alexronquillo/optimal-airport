@@ -1,8 +1,6 @@
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public abstract class ServiceArea {
 	private ServiceBehavior serviceBehavior;
-	private AtomicBoolean available = new AtomicBoolean(true);
+	private volatile boolean available = true;
 	private String name;
 	private double startWait = 0;
 	private double stopWait = 0;
@@ -13,7 +11,7 @@ public abstract class ServiceArea {
 	public ServiceArea(String name, ServiceBehavior serviceBehavior, double simTime) {
 		this.name = name;
 		this.serviceBehavior = serviceBehavior;
-		available.set(true);
+		available = true;
 		standardServiceTime = simTime * serviceTimeRatio;
 	}
 	
@@ -22,11 +20,11 @@ public abstract class ServiceArea {
 	}
 	
 	public boolean isAvailable() {
-		return available.get();
+		return available;
 	}
 	
 	public void setAvailable(boolean available) {
-		this.available.set(available);
+		this.available = available;
 	}
 	
 	public void service(Airplane airplane) {		
@@ -40,7 +38,7 @@ public abstract class ServiceArea {
 						sendAirplaneToDepartureQueue(airplane);
 						airplane.startWait();
 						System.out.println(name + " starts cleaning procedure. Time: " + Airport.getSimulationTime());						
-						available.set(true);
+						available = true;
 						System.out.println(name + " is available. Time: " + Airport.getSimulationTime());
 						startWait();
 					}

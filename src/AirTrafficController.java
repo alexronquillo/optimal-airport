@@ -1,8 +1,3 @@
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.swing.JOptionPane;
-
 public class AirTrafficController implements Runnable {	
 	private volatile int landingPlanes = 0;
 	private double airplaneWaitTimeTotal = 0;
