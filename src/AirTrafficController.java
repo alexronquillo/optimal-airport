@@ -1,6 +1,8 @@
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.swing.JOptionPane;
+
 public class AirTrafficController implements Runnable {	
 	private AtomicInteger landingPlanes = new AtomicInteger(0);
 	private double airplaneWaitTimeTotal = 0;
@@ -27,6 +29,7 @@ public class AirTrafficController implements Runnable {
 					if (hasPlanesAwaitingTakeoff()) {
 						Airplane airplane = Airport.getDepartureQueue().poll(); 
 						airplane.stopWait();
+						Airport.addPlaneTimes(airplane.waitTimes);
 						System.out.println("Air Traffic Controller signals " + airplane.getName() + " to takeoff. Time: " + Airport.getSimulationTime());
 						signalTakeoff(airplane);
 					}

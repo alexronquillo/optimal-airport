@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,6 +16,7 @@ public class Airplane implements Comparable<Airplane> {
 	private double stopWait = 0;
 	private double totalWait = 0;
 	private double landingAndTakeoffTime = 0;
+	public ArrayList<Double> waitTimes = new ArrayList<Double>();
 	
 	private long timeEnteredSystem = 0;
 	private long timeExitedSystem = 0;
@@ -103,6 +105,7 @@ public class Airplane implements Comparable<Airplane> {
 	public void stopWait(){
 		stopWait = Airport.getElapsedTime();
 		totalWait += stopWait - startWait;
+		waitTimes.add(stopWait - startWait);
 	}
 	
 	public double getTotalWait() {

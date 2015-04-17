@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -6,8 +7,8 @@ import javax.swing.JOptionPane;
 
 public class Airport {
 	// Following values are constants we should edit
-	private static double simulationPeriod = 1.0;
-	private static double arrivalPeriod = .25;
+	private static double simulationPeriod = 10;
+	private static double arrivalPeriod = 5;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private final int averageNumberOfFlightsPerDay = 2400;
 	private static double elapsedTime = 0.0;
@@ -31,6 +32,10 @@ public class Airport {
 	private static AirTrafficController airTrafficController = new AirTrafficController();
 	private static GroundMovementController groundMovementController = new GroundMovementController();
 
+	private static double totalArrivalsQueueTime = 0;
+	private static double totalGroundQueueTime = 0;
+	private static double totalDepartureQueueTime = 0;
+	
 	public static void main(String[] args) {
 		Thread arrivalsThread = new Thread(new Arrivals(arrivalPeriod));
 		arrivalsThread.start();
@@ -60,8 +65,6 @@ public class Airport {
 		//get average sojourn time
 		cumulativeSojournTime /= airTrafficController.getNumberOfPlanes();
 		
-		//get average wait time
-		double averageWaitTime = airTrafficController.getAverageWaitTime();
 		
 		//get average runway utilization
 		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simulationPeriod;
@@ -91,7 +94,9 @@ public class Airport {
 				           "Simulation has completed. Results Follow:\n" +
 	                       "Average Gate Utilization: " + gateUtilization + "\n" + 
 	                       "Average Bay Utilization: " + bayUtilization + "\n" +
-	                       "Average Wait Time: " + averageWaitTime + "\n" +
+	                       "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+	                       "Average Landed Queue Time: " + (totalGroundQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+	                       "Average Departure Queue Time: " + (totalDepartureQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
 	                       "Rejected planes: " + rejectedPlanes + "\n" + 
 	                       "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
 	                       "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
@@ -195,5 +200,11 @@ public class Airport {
 	
 	public static int getArrivalsMaxSize() {
 		return ARRIVALS_QUEUE_CAPACITY;
+	}
+	
+	public static void addPlaneTimes(ArrayList<Double> list) {
+		totalArrivalsQueueTime += list.get(0);
+		totalGroundQueueTime += list.get(1);
+		totalDepartureQueueTime += list.get(2);
 	}
 }
