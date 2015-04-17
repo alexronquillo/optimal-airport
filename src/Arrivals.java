@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import javax.swing.JOptionPane;
 
 
-public class Arrivals implements Runnable{
+public class Arrivals implements Runnable {
 	// Following values are constants we should edit
 	private double arrivalPeriod;
 	private double landingAndTakingOffFactor = 0.006944444;
@@ -39,7 +39,6 @@ public class Arrivals implements Runnable{
 			double arrivalTime = getEstimate(meanInterArrivalTime);
 			if (timeElapsedTotal > arrivalPeriod) {
 				running = false;
-				continue;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
 				Airplane plane = generatePlane();
 				plane.startWait();
@@ -61,13 +60,15 @@ public class Arrivals implements Runnable{
 	public Airplane generatePlane() {
 		int salt = generator.nextInt(100);
 		String name = getPlaneName();	
-		
+		Airplane.Priority priority = getPriority();
+		Airplane.Size size = getSize();
+
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
-			System.out.println(name + " with " + getPriority() + " priority " +  "and " + getSize() + " size " + "arrives. Time: " + Airport.getSimulationTime());
-			return new CargoPlane(name, getPriority(), getSize(), Airport.getSimulationTime() * landingAndTakingOffFactor);
+			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getSimulationTime());
+			return new CargoPlane(name, priority, size, Airport.getSimulationTime() * landingAndTakingOffFactor);
 		} else {
-			System.out.println(name + " with " + getPriority() + " priority " +  "and " + getSize() + " size " + "arrives. Time: " + Airport.getSimulationTime());
-			return new PassengerPlane(name, getPriority(), getSize(), Airport.getSimulationTime() * landingAndTakingOffFactor);
+			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getSimulationTime());
+			return new PassengerPlane(name, priority, size, Airport.getSimulationTime() * landingAndTakingOffFactor);
 		}
 	}
 	
