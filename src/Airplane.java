@@ -42,7 +42,7 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	public void land() {
-		System.out.println(name + " starts landing procedure. Time: " + Airport.getSimulationTime());
+		System.out.println(name + " starts landing procedure. Time: " + Airport.getCurrentSimulationTime());
 		runway = Airport.getRunways().poll();
 		runway.startUse();
 
@@ -54,7 +54,7 @@ public class Airplane implements Comparable<Airplane> {
 				runway.stopUse();
 				Airport.getLandedQueue().offer(Airplane.this);
 				Airport.getAirTrafficController().signalLanded();
-				System.out.println(name + " landed. Time: " + Airport.getSimulationTime());
+				System.out.println(name + " landed. Time: " + Airport.getCurrentSimulationTime());
 				landingTimer.cancel();
 			}
 		}, getLandingDelay());
@@ -63,7 +63,7 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	public void takeoff() {
-		System.out.println(name + " starts takeoff procedure. Time: " + Airport.getSimulationTime());
+		System.out.println(name + " starts takeoff procedure. Time: " + Airport.getCurrentSimulationTime());
 		runway = Airport.getRunways().poll();
 		runway.startUse();
 
@@ -73,7 +73,7 @@ public class Airplane implements Comparable<Airplane> {
 			public void run() {
 				Airport.getRunways().offer(runway);
 				runway.stopUse();
-				System.out.println(name + " took off. Time: " + Airport.getSimulationTime());
+				System.out.println(name + " took off. Time: " + Airport.getCurrentSimulationTime());
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());

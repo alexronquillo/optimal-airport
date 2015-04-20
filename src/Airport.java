@@ -7,21 +7,19 @@ import javax.swing.JOptionPane;
 
 public class Airport {
 	// Following values are constants we should edit
-	private static double simulationPeriod = 10;
-	private static double arrivalPeriod = 5;
-	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
-	private final int averageNumberOfFlightsPerDay = 2400;
-	private static double elapsedTime = 0.0;
-	private static double startTime = System.currentTimeMillis();
-	
-	private static double runwayTotal = 0;
-	private static double cumulativeSojournTime = 0;
+	private static final double SIMULATION_PERIOD = 1;
+	private static final double ARRIVAL_PERIOD = 5;
 	private static final int NUM_RUNWAYS = 2;
 	private static final int NUM_GATES = 10;
 	private static final int NUM_BAYS = 10;
 	private static final int ARRIVALS_QUEUE_CAPACITY = 150;
 	private static final int LANDED_QUEUE_CAPACITY = 6;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 6;
+	
+	private static double elapsedTime = 0.0;
+	private static double startTime = System.currentTimeMillis();	
+	private static double runwayTotal = 0;
+	private static double cumulativeSojournTime = 0;
 	private static int rejectedPlanes = 0;
 	private static BlockingQueue<Runway> runways = initializeRunways();
 	private static Gate[] gates = initializeGates();
@@ -37,7 +35,7 @@ public class Airport {
 	private static double totalDepartureQueueTime = 0;
 	
 	public static void main(String[] args) {
-		Thread arrivalsThread = new Thread(new Arrivals(arrivalPeriod));
+		Thread arrivalsThread = new Thread(new Arrivals(ARRIVAL_PERIOD));
 		arrivalsThread.start();
 		
 		Thread atcThread = new Thread(airTrafficController);
@@ -49,7 +47,7 @@ public class Airport {
 		boolean running = true;
 		while (running) {
 			elapsedTime = (System.currentTimeMillis()-startTime)/1000;
-			if (elapsedTime > simulationPeriod) {
+			if (elapsedTime > SIMULATION_PERIOD) {
 				System.out.println("Simulation has completed execution.");
 				running = false;
 				continue;
@@ -67,7 +65,7 @@ public class Airport {
 		
 		
 		//get average runway utilization
-		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simulationPeriod;
+		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / SIMULATION_PERIOD;
 		
 		//get average gate utilization
 	    average = 0;
@@ -75,7 +73,7 @@ public class Airport {
 		     	average += g.getTotalWait();
 		}
 		average /= NUM_GATES;
-		double gateUtilization = 1- (average / simulationPeriod);
+		double gateUtilization = 1- (average / SIMULATION_PERIOD);
 		
 		//get average bay utilization
 		average = 0;
@@ -83,7 +81,7 @@ public class Airport {
 	     	average += b.getTotalWait();
 		}
 		average /= NUM_BAYS;
-		double bayUtilization = 1- (average / simulationPeriod);
+		double bayUtilization = 1- (average / SIMULATION_PERIOD);
 		
 		//get rejected planes
 		rejectedPlanes = arrivalsQueue.size() + getRejectedPlanes();
@@ -106,7 +104,7 @@ public class Airport {
 		System.exit(0);
 	}
 
-	public static double getSimulationTime() {
+	public static double getCurrentSimulationTime() {
 		return (double)(System.currentTimeMillis() - startTime) / 1000;
 	}
 	
@@ -166,7 +164,7 @@ public class Airport {
 	private static Gate[] initializeGates() {
 		Gate[] gates = new Gate[NUM_GATES];
 		for (int i = 0; i < NUM_GATES; ++i) {
-			gates[i] = new Gate("Gate " + i, simulationPeriod);
+			gates[i] = new Gate("Gate " + i, SIMULATION_PERIOD);
 		}
 		return gates;
 	}
@@ -174,7 +172,7 @@ public class Airport {
 	private static CargoBay[] initializeCargoBays() {
 		CargoBay[] bays = new CargoBay[NUM_BAYS];
 		for (int i = 0; i < NUM_BAYS; ++i) {
-			bays[i] = new CargoBay("CargoBay " + i, simulationPeriod);
+			bays[i] = new CargoBay("CargoBay " + i, SIMULATION_PERIOD);
 		}
 		return bays;
 	}
@@ -192,14 +190,6 @@ public class Airport {
 	
 	public static void addRunwayTotal(double d) {
 		runwayTotal += d;
-	}
-	
-	public double getSimTime () {
-		return simulationPeriod;
-	}
-	
-	public static int getArrivalsMaxSize() {
-		return ARRIVALS_QUEUE_CAPACITY;
 	}
 	
 	public static void addPlaneTimes(ArrayList<Double> list) {
