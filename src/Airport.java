@@ -3,18 +3,16 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import javax.swing.JOptionPane;
-
 public class Airport {
 	// Following values are constants we should edit
 	private static final double SIMULATION_PERIOD = 1;
 	private static final double ARRIVAL_PERIOD = 5;
 	private static final int NUM_RUNWAYS = 2;
 	private static final int NUM_GATES = 10;
-	private static final int NUM_BAYS = 10;
-	private static final int ARRIVALS_QUEUE_CAPACITY = 150;
+	private static final int NUM_BAYS = 10;	
 	private static final int LANDED_QUEUE_CAPACITY = 6;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 6;
+	public static final int ARRIVALS_QUEUE_CAPACITY = 150;
 	
 	private static double elapsedTime = 0.0;
 	private static double startTime = System.currentTimeMillis();	
