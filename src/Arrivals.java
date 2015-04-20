@@ -27,7 +27,7 @@ public class Arrivals implements Runnable {
 		this.arrivalPeriod = runTime;
 		this.arrivalsQueue = Airport.getArrivalsQueue();
 		meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
-		maxSizeOfArrivals = Airport.getArrivalsMaxSize();
+		maxSizeOfArrivals = Airport.ARRIVALS_QUEUE_CAPACITY;
 	}
 	
 	@Override
@@ -64,11 +64,11 @@ public class Arrivals implements Runnable {
 		Airplane.Size size = getSize();
 
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
-			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getSimulationTime());
-			return new CargoPlane(name, priority, size, Airport.getSimulationTime() * landingAndTakingOffFactor);
+			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
+			return new CargoPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
 		} else {
-			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getSimulationTime());
-			return new PassengerPlane(name, priority, size, Airport.getSimulationTime() * landingAndTakingOffFactor);
+			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
+			return new PassengerPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
 		}
 	}
 	
