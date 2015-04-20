@@ -7,14 +7,14 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class Airport {
 	// Following values are constants we should edit
-	private static final double SIMULATION_PERIOD = 1;
-	private static final double ARRIVAL_PERIOD = 5;
+	private static final double SIMULATION_PERIOD = .5;
+	private static final double ARRIVAL_PERIOD = .25;
 	private static final int NUM_RUNWAYS = 2;
-	private static final int NUM_GATES = 10;
-	private static final int NUM_BAYS = 10;	
-	private static final int LANDED_QUEUE_CAPACITY = 6;
-	private static final int DEPARTURE_QUEUE_CAPACITY = 6;
-	public static final int ARRIVALS_QUEUE_CAPACITY = 150;
+	private static final int NUM_GATES = 35; //207;
+	private static final int NUM_BAYS = 30; //28;	
+	private static final int LANDED_QUEUE_CAPACITY = 100;
+	private static final int DEPARTURE_QUEUE_CAPACITY = 15;
+	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
 	
 	private static double elapsedTime = 0.0;
 	private static double startTime = System.currentTimeMillis();	
@@ -73,7 +73,7 @@ public class Airport {
 		     	average += g.getTotalWait();
 		}
 		average /= NUM_GATES;
-		double gateUtilization = 1- (average / SIMULATION_PERIOD);
+		double gateUtilization = average / SIMULATION_PERIOD;
 		
 		//get average bay utilization
 		average = 0;
@@ -81,7 +81,7 @@ public class Airport {
 	     	average += b.getTotalWait();
 		}
 		average /= NUM_BAYS;
-		double bayUtilization = 1- (average / SIMULATION_PERIOD);
+		double bayUtilization = average / SIMULATION_PERIOD;
 		
 		//get rejected planes
 		rejectedPlanes = arrivalsQueue.size() + getRejectedPlanes();

@@ -15,7 +15,7 @@ public class Arrivals implements Runnable {
 	
 	// These values should never need editing
 	private int maxSizeOfArrivals = 0;
-	private double meanInterArrivalTime = arrivalPeriod / averageNumberOfFlightsPerDay;
+	private double meanInterArrivalTime;
 	private static double elapsedTime = 0.0;
 	private static double startTime = 0.0;
 	private Random generator = new Random();
@@ -23,10 +23,10 @@ public class Arrivals implements Runnable {
 	private boolean running = true;
 	private BlockingQueue<Airplane> arrivalsQueue = null;
 	
-	public Arrivals(double runTime) {
-		this.arrivalPeriod = runTime;
+	public Arrivals(double arrivalPeriod) {
+		this.arrivalPeriod = arrivalPeriod;
 		this.arrivalsQueue = Airport.getArrivalsQueue();
-		meanInterArrivalTime = runTime / averageNumberOfFlightsPerDay;
+		meanInterArrivalTime = arrivalPeriod / averageNumberOfFlightsPerDay;
 		maxSizeOfArrivals = Airport.ARRIVALS_QUEUE_CAPACITY;
 	}
 	
