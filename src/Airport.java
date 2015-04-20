@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -84,20 +86,27 @@ public class Airport {
 		//get rejected planes
 		rejectedPlanes = arrivalsQueue.size() + getRejectedPlanes();
 		
-		//output all these things
-		System.out.println("=================================================\n"+
-	                       "Optimal Airport Simulation\n" + 
-				           "Simulation has completed. Results Follow:\n" +
-	                       "Average Gate Utilization: " + gateUtilization + "\n" + 
-	                       "Average Bay Utilization: " + bayUtilization + "\n" +
-	                       "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
-	                       "Average Landed Queue Time: " + (totalGroundQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
-	                       "Average Departure Queue Time: " + (totalDepartureQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
-	                       "Rejected planes: " + rejectedPlanes + "\n" + 
-	                       "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
-	                       "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
-	                       "Average Runway Utilization: " + runwayUtil + "\n" +
-                           "=================================================");
+		try {
+			String statisticsOutput = "=================================================\n"+
+                    "Optimal Airport Simulation\n" + 
+			           "Simulation has completed. Results Follow:\n" +
+                    "Average Gate Utilization: " + gateUtilization + "\n" + 
+                    "Average Bay Utilization: " + bayUtilization + "\n" +
+                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+                    "Average Landed Queue Time: " + (totalGroundQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+                    "Average Departure Queue Time: " + (totalDepartureQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+                    "Rejected planes: " + rejectedPlanes + "\n" + 
+                    "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
+                    "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
+                    "Average Runway Utilization: " + runwayUtil + "\n" +
+                    "=================================================";
+			
+			FileWriter fileWriter = new FileWriter(new File("airport_stats.txt"));
+			fileWriter.write(statisticsOutput);
+			fileWriter.close();
+		} catch (Exception e) {
+			System.out.println("Exception: " + e.getMessage() + "\n\nStack Trace: " + e.getStackTrace());
+		}		
 		
 		System.exit(0);
 	}
