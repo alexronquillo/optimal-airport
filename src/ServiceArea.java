@@ -32,14 +32,14 @@ public abstract class ServiceArea {
 				public void run() {
 					try {	
 						stopWait();
-						System.out.println(airplane.getName() + " starts receiving service at " + name + ". Time: " + Airport.getSimulationTime());
+						System.out.println(airplane.getName() + " starts receiving service at " + name + ". Time: " + Airport.getCurrentSimulationTime());
 						serviceBehavior.service(airplane, standardServiceTime);
-						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + Airport.getSimulationTime());
+						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + Airport.getCurrentSimulationTime());
 						sendAirplaneToDepartureQueue(airplane);
 						airplane.startWait();
-						System.out.println(name + " starts cleaning procedure. Time: " + Airport.getSimulationTime());						
+						System.out.println(name + " starts cleaning procedure. Time: " + Airport.getCurrentSimulationTime());						
 						available = true;
-						System.out.println(name + " is available. Time: " + Airport.getSimulationTime());
+						System.out.println(name + " is available. Time: " + Airport.getCurrentSimulationTime());
 						startWait();
 					}
 					catch (Exception e) {
