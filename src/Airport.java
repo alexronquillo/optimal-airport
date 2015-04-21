@@ -7,14 +7,14 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class Airport {
 	// Following values are constants we should edit
-	private static final double SIMULATION_PERIOD = .5;
-	private static final double ARRIVAL_PERIOD = .25;
-	private static final int NUM_RUNWAYS = 2;
-	private static final int NUM_GATES = 35; //207;
-	private static final int NUM_BAYS = 30; //28;	
-	private static final int LANDED_QUEUE_CAPACITY = 100;
-	private static final int DEPARTURE_QUEUE_CAPACITY = 15;
+	public static final double SIMULATION_PERIOD = 10;
 	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
+	private static final double ARRIVAL_PERIOD = 5;
+	private static final int NUM_RUNWAYS = 5;
+	private static final int NUM_GATES = 207;
+	private static final int NUM_BAYS = 28;	
+	private static final int LANDED_QUEUE_CAPACITY = 100;
+	private static final int DEPARTURE_QUEUE_CAPACITY = 15;	
 	
 	private static double elapsedTime = 0.0;
 	private static double startTime = System.currentTimeMillis();	
@@ -46,7 +46,7 @@ public class Airport {
 		
 		boolean running = true;
 		while (running) {
-			elapsedTime = (System.currentTimeMillis()-startTime)/1000;
+			elapsedTime = (System.currentTimeMillis()-startTime);
 			if (elapsedTime > SIMULATION_PERIOD) {
 				System.out.println("Simulation has completed execution.");
 				running = false;
@@ -112,7 +112,7 @@ public class Airport {
 	}
 
 	public static double getCurrentSimulationTime() {
-		return (double)(System.currentTimeMillis() - startTime) / 1000;
+		return (double)(System.currentTimeMillis() - startTime);
 	}
 	
 	public static int getRejectedPlanes() {

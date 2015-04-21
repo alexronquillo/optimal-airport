@@ -5,14 +5,11 @@ public abstract class ServiceArea {
 	private double startWait = 0;
 	private double stopWait = 0;
 	private double totalWait = 0;
-	private double serviceTimeRatio = 0.0555555;
-	private double standardServiceTime = 0;
 	
-	public ServiceArea(String name, ServiceBehavior serviceBehavior, double simTime) {
+	public ServiceArea(String name, ServiceBehavior serviceBehavior) {
 		this.name = name;
 		this.serviceBehavior = serviceBehavior;
 		available = true;
-		standardServiceTime = simTime * serviceTimeRatio;
 	}
 	
 	public String getName() {
@@ -33,7 +30,7 @@ public abstract class ServiceArea {
 					try {	
 						stopWait();
 						System.out.println(airplane.getName() + " starts receiving service at " + name + ". Time: " + Airport.getCurrentSimulationTime());
-						serviceBehavior.service(airplane, standardServiceTime);
+						serviceBehavior.service(airplane);
 						System.out.println(airplane.getName() + " finishes receiving service at " + name + ". Time: " + Airport.getCurrentSimulationTime());
 						sendAirplaneToDepartureQueue(airplane);
 						airplane.startWait();				

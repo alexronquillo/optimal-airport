@@ -34,21 +34,30 @@ public class Arrivals implements Runnable {
 	public void run() {		
 		startTime = System.currentTimeMillis();
 		
+		double remainder = 0;
 		while (running) {
-			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
+			
+			double timeElapsedTotal = (System.currentTimeMillis()-startTime);
 			double arrivalTime = getEstimate(meanInterArrivalTime);
 			if (timeElapsedTotal > arrivalPeriod) {
 				running = false;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
-				Airplane plane = generatePlane();
-				plane.startWait();
-				boolean success = false;
-				if (maxSizeOfArrivals >= arrivalsQueue.size()){
-					success = arrivalsQueue.offer(plane);
-				}
-				elapsedTime = timeElapsedTotal;
-				if (!success) {
-					rejectPlane(plane);
+				
+				double calculatedTime = timeElapsedTotal - elapsedTime;
+				int planesToMake = (int) ((calculatedTime + remainder )/ arrivalTime);
+				remainder = calculatedTime % arrivalTime;
+				
+				for (int i = 0; i < planesToMake; i++) {
+					Airplane plane = generatePlane();
+					plane.startWait();
+					boolean success = false;
+					if (maxSizeOfArrivals >= arrivalsQueue.size()){
+						success = arrivalsQueue.offer(plane);
+					}
+					elapsedTime = timeElapsedTotal;
+					if (!success) {
+						rejectPlane(plane);
+					}
 				}
 			}
 		}
@@ -65,10 +74,10 @@ public class Arrivals implements Runnable {
 
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
 			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
-			return new CargoPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
+			return new CargoPlane(name, priority, size, Airport.SIMULATION_PERIOD * landingAndTakingOffFactor);
 		} else {
 			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
-			return new PassengerPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
+			return new PassengerPlane(name, priority, size, Airport.SIMULATION_PERIOD * landingAndTakingOffFactor);
 		}
 	}
 	
