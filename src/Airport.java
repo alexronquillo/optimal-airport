@@ -16,7 +16,6 @@ public class Airport {
 	private static final int LANDED_QUEUE_CAPACITY = 100;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 15;	
 	
-	private static double elapsedTime = 0.0;
 	private static double startTime = System.currentTimeMillis();	
 	private static double runwayTotal = 0;
 	private static double cumulativeSojournTime = 0;
@@ -34,12 +33,25 @@ public class Airport {
 	private static double totalGroundQueueTime = 0;
 	private static double totalDepartureQueueTime = 0;
 	
-	public static void main(String[] args) 
-	{
-		System.out.println(getCurrentSimulationTime());
-		Airplane testPlane = new PassengerPlane("Test Plane", Airplane.Priority.HIGH, Airplane.Size.MEDIUM, 1);
-		testPlane.land();
-		System.out.println(getCurrentSimulationTime());
+	public static void main(String[] args) {
+		Thread arrivalsThread = new Thread(new Arrivals(ARRIVAL_PERIOD));
+		arrivalsThread.start();
+		
+		Thread atcThread = new Thread(airTrafficController);
+		atcThread.start();
+		
+		Thread gmcThread = new Thread(groundMovementController);
+		gmcThread.start();	
+		
+		boolean running = true;
+		while (running) {
+			if (getCurrentSimulationTime() > SIMULATION_PERIOD) {
+				System.out.println("Simulation has completed execution.");
+				running = false;
+				continue;
+			}
+		}
+		closingProcedures();
 	}
 
 	//do closing things
@@ -98,7 +110,7 @@ public class Airport {
 	}
 
 	public static double getCurrentSimulationTime() {
-		return (double)(System.currentTimeMillis() - startTime) / 1000;
+		return (double)(System.currentTimeMillis() - startTime);
 	}
 	
 	public static int getRejectedPlanes() {
