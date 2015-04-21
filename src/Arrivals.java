@@ -1,59 +1,74 @@
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
+import javax.swing.JOptionPane;
+
+
 public class Arrivals implements Runnable {
+	// Following values are constants we should edit
+	private double arrivalPeriod;
+	private double landingAndTakingOffFactor = 0.006944444;
 	private final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
-	private final int AVERAGE_NUMBER_OF_FLIGHTS_PER_DAY = 2400;
+	private final int averageNumberOfFlightsPerDay = 2400;
 	private final int NUMBER_OF_SIZES = Airplane.Size.values().length;
 	private final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
-	private final double LANDING_FACTOR = 0.006944444;
-
+	
+	// These values should never need editing
+	private int maxSizeOfArrivals = 0;
+	private double meanInterArrivalTime;
+	private static double elapsedTime = 0.0;
+	private static double startTime = 0.0;
 	private Random generator = new Random();
 	private int numberOfPlanes = 0;
+	private boolean running = true;
+	private BlockingQueue<Airplane> arrivalsQueue = null;
+	
+	public Arrivals(double arrivalPeriod) {
+		this.arrivalPeriod = arrivalPeriod;
+		this.arrivalsQueue = Airport.getArrivalsQueue();
+		meanInterArrivalTime = arrivalPeriod / averageNumberOfFlightsPerDay;
+		maxSizeOfArrivals = Airport.ARRIVALS_QUEUE_CAPACITY;
+	}
 	
 	@Override
 	public void run() {		
-		BlockingQueue<Airplane> arrivalsQueue = Airport.getArrivalsQueue();
-		double totalElapsedTime = 0;
-		double startTime = System.currentTimeMillis();
-		double elapsedTimeSincePlaneGenerated = 0;
-
-		if (arrivalsQueue != null) {
-			while ((totalElapsedTime = (System.currentTimeMillis() - startTime) / 1000) <= Airport.ARRIVAL_PERIOD) {
-				double arrivalTime = getArrivalTime();
-
-				if (totalElapsedTime - elapsedTimeSincePlaneGenerated > arrivalTime) {
-					Airplane plane = generatePlane();
-					plane.startWait();
-					elapsedTimeSincePlaneGenerated = totalElapsedTime;
-
-					boolean success = false;
-					if (Airport.ARRIVALS_QUEUE_CAPACITY >= arrivalsQueue.size()) {
-						success = arrivalsQueue.offer(plane);
-					}
-
-					if (!success) {
-						rejectPlane(plane);
-					}
+		startTime = System.currentTimeMillis();
+		
+		while (running) {
+			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
+			double arrivalTime = getEstimate(meanInterArrivalTime);
+			if (timeElapsedTotal > arrivalPeriod) {
+				running = false;
+			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
+				Airplane plane = generatePlane();
+				plane.startWait();
+				boolean success = false;
+				if (maxSizeOfArrivals >= arrivalsQueue.size()){
+					success = arrivalsQueue.offer(plane);
+				}
+				elapsedTime = timeElapsedTotal;
+				if (!success) {
+					rejectPlane(plane);
 				}
 			}
-		} else {
-			System.out.println("Error: Arrivals queue is null");
 		}
+		System.out.println("Arrivals has stopped generating new planes.");
+
 	}
 	
+	//makes a plane
 	public Airplane generatePlane() {
 		int salt = generator.nextInt(100);
-		String name = getNextPlaneName();	
-		Airplane.Priority priority = getRandomPriority();
-		Airplane.Size size = getRandomSize();
+		String name = getPlaneName();	
+		Airplane.Priority priority = getPriority();
+		Airplane.Size size = getSize();
 
-		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER) {					
+		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
 			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
-			return new CargoPlane(name, priority, size, Airport.getCurrentSimulationTime() * LANDING_FACTOR);
+			return new CargoPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
 		} else {
 			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
-			return new PassengerPlane(name, priority, size, Airport.getCurrentSimulationTime() * LANDING_FACTOR);
+			return new PassengerPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
 		}
 	}
 	
@@ -62,29 +77,27 @@ public class Arrivals implements Runnable {
 		Airport.setRejectedPlanes(Airport.getRejectedPlanes() + 1);
 	}
 	
-	public Airplane.Size getRandomSize() {
+	public Airplane.Size getSize() {
 		int index = generator.nextInt(NUMBER_OF_SIZES);
 		return Airplane.Size.values()[index];
 	}
 	
-	public Airplane.Priority getRandomPriority() {
+	public Airplane.Priority getPriority() {
 		int index = generator.nextInt(NUMBER_OF_PRIORITIES);
 		return Airplane.Priority.values()[index];
 	}
 	
-	public String getNextPlaneName() {
+	public String getPlaneName() {
 		numberOfPlanes++;
 		return "Plane " + numberOfPlanes;
 	}
 	
-	public double getArrivalTime() {
+	//get a values anywhere from 75% to 125% mean value
+	public double getEstimate(double mean) {
 		int max = 25;
 		int min = 0;
-		double meanInterArrivalTime = Airport.ARRIVAL_PERIOD / AVERAGE_NUMBER_OF_FLIGHTS_PER_DAY;
-
-		// Get a value anywhere from 75% to 125% of the mean value
 		double salt = .88 + ((double)generator.nextInt((max-min)+1) + min) / 100;
-
-		return meanInterArrivalTime * salt;
+		//JOptionPane.showMessageDialog(null, mean * salt);
+		return mean * salt;
 	}
 }
