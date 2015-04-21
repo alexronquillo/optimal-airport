@@ -37,7 +37,7 @@ public class Arrivals implements Runnable {
 		double remainder = 0;
 		while (running) {
 			
-			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
+			double timeElapsedTotal = (System.currentTimeMillis()-startTime);
 			double arrivalTime = getEstimate(meanInterArrivalTime);
 			if (timeElapsedTotal > arrivalPeriod) {
 				running = false;
