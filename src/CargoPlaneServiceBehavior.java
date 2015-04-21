@@ -17,13 +17,13 @@ public class CargoPlaneServiceBehavior implements ServiceBehavior {
 		
 		switch (airplane.getSize()) {
 			case SMALL:
-				return (long)(serviceTime * 1.2 * 1000);
+				return (long)(serviceTime * 1.2);
 			case MEDIUM:
-				return (long)(serviceTime * 1.5 * 1000);				
+				return (long)(serviceTime * 1.5);				
 			case LARGE:
-				return (long)(serviceTime * 1.8 * 1000);
+				return (long)(serviceTime * 1.8);
 			default:
-				return (long)(serviceTime * 2 * 1000);
+				return (long)(serviceTime * 2);
 		}
 	}
 
