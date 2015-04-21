@@ -86,7 +86,7 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	private double getSojournTime() {
-		return (timeExitedSystem - timeEnteredSystem)/1000;
+		return (timeExitedSystem - timeEnteredSystem);
 	}
 	
 	@Override
