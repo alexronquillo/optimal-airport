@@ -7,9 +7,9 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class Airport {
 	// Following values are constants we should edit
-	public static final double SIMULATION_PERIOD = 10;
+	public static final double SIMULATION_PERIOD = 1000;
 	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
-	private static final double ARRIVAL_PERIOD = 5;
+	private static final double ARRIVAL_PERIOD = 500;
 	private static final int NUM_RUNWAYS = 5;
 	private static final int NUM_GATES = 207;
 	private static final int NUM_BAYS = 28;	
