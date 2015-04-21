@@ -1,18 +1,20 @@
-import javax.swing.JOptionPane;
 
 
 public class CargoPlaneServiceBehavior implements ServiceBehavior {	
 	@Override
-	public void service(Airplane airplane, double serviceTime) throws InvalidAirplaneTypeException, InterruptedException {
+	public void service(Airplane airplane) throws InvalidAirplaneTypeException, InterruptedException {
 		if (airplane instanceof CargoPlane) {
-			Thread.sleep(getServiceTime(airplane, serviceTime));
+			Thread.sleep(getServiceTime(airplane));
 		} else {
 			throw new InvalidAirplaneTypeException("Can only service a cargo plane");
 		}
 	}
 	
 	@Override
-	public long getServiceTime(Airplane airplane, double serviceTime) {
+	public long getServiceTime(Airplane airplane) {
+		double serviceTimeRatio = 0.0555555;
+		double serviceTime = Airport.SIMULATION_PERIOD * serviceTimeRatio;
+		
 		switch (airplane.getSize()) {
 			case SMALL:
 				return (long)(serviceTime * 1.2 * 1000);
