@@ -3,14 +3,12 @@ public class AirTrafficController implements Runnable {
 	private double airplaneWaitTimeTotal = 0;
 	private int numberOfPlanes = 0;
 	private volatile boolean nextAttemptIsLanding = true;
-	private volatile boolean running = true;
 	
 	@Override
 	public void run() {
-		while (running) {
+		while (true) {
 			if (airportHasRunway()) {
 				if (nextAttemptIsLanding) {
-					// Attempt landing
 					if (airplaneCanLand()) {
 						Airplane airplane = Airport.getArrivalsQueue().poll();
 						System.out.println("Air Traffic Controller signals " + airplane.getName() + " to land. Time: " + Airport.getCurrentSimulationTime());	
@@ -20,8 +18,7 @@ public class AirTrafficController implements Runnable {
 					}	
 					
 					nextAttemptIsLanding = false;
-				} else {
-					// Attempt departure
+				} else {					
 					if (hasPlanesAwaitingTakeoff()) {
 						Airplane airplane = Airport.getDepartureQueue().poll(); 
 						airplane.stopWait();
@@ -32,7 +29,7 @@ public class AirTrafficController implements Runnable {
 					
 					nextAttemptIsLanding = true;
 				}
-			} 
+			}
 		}
 	}
 	
@@ -43,10 +40,6 @@ public class AirTrafficController implements Runnable {
 	
 	public void signalLanded() {
 		--landingPlanes;
-	}
-
-	public void terminate() {
-		this.running = false;
 	}
 
 	public double getAverageWaitTime() {

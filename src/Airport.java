@@ -34,26 +34,12 @@ public class Airport {
 	private static double totalGroundQueueTime = 0;
 	private static double totalDepartureQueueTime = 0;
 	
-	public static void main(String[] args) {
-		Thread arrivalsThread = new Thread(new Arrivals(ARRIVAL_PERIOD));
-		arrivalsThread.start();
-		
-		Thread atcThread = new Thread(airTrafficController);
-		atcThread.start();
-		
-		Thread gmcThread = new Thread(groundMovementController);
-		gmcThread.start();	
-		
-		boolean running = true;
-		while (running) {
-			elapsedTime = (System.currentTimeMillis()-startTime);
-			if (elapsedTime > SIMULATION_PERIOD) {
-				System.out.println("Simulation has completed execution.");
-				running = false;
-				continue;
-			}
-		}
-		closingProcedures();
+	public static void main(String[] args) 
+	{
+		System.out.println(getCurrentSimulationTime());
+		Airplane testPlane = new PassengerPlane("Test Plane", Airplane.Priority.HIGH, Airplane.Size.MEDIUM, 1);
+		testPlane.land();
+		System.out.println(getCurrentSimulationTime());
 	}
 
 	//do closing things
@@ -112,7 +98,7 @@ public class Airport {
 	}
 
 	public static double getCurrentSimulationTime() {
-		return (double)(System.currentTimeMillis() - startTime);
+		return (double)(System.currentTimeMillis() - startTime) / 1000;
 	}
 	
 	public static int getRejectedPlanes() {
@@ -184,10 +170,6 @@ public class Airport {
 		return bays;
 	}
 	
-	public static double getElapsedTime(){
-		return elapsedTime;	
-	}
-
 	public static double getStartTime(){
 		return startTime;
 	}

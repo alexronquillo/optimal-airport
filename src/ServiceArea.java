@@ -50,11 +50,11 @@ public abstract class ServiceArea {
 	}	
 	
 	public void startWait() {
-		startWait = Airport.getElapsedTime();
+		startWait = Airport.getCurrentSimulationTime();
 	}
 	
 	public void stopWait(){
-		stopWait = Airport.getElapsedTime();
+		stopWait = Airport.getCurrentSimulationTime();
 		totalWait += stopWait - startWait;
 	}
 	

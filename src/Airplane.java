@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.JOptionPane;
-
 public class Airplane implements Comparable<Airplane> {
 	public static enum Priority { HIGH, MEDIUM, LOW }
 	public static enum Size { SMALL, MEDIUM, LARGE }
@@ -99,11 +97,11 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	public void startWait() {
-		startWait = Airport.getElapsedTime();
+		startWait = Airport.getCurrentSimulationTime();
 	}
 	
 	public void stopWait(){
-		stopWait = Airport.getElapsedTime();
+		stopWait = Airport.getCurrentSimulationTime();
 		totalWait += stopWait - startWait;
 		waitTimes.add(stopWait - startWait);
 	}
