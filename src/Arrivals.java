@@ -65,10 +65,10 @@ public class Arrivals implements Runnable {
 
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER){					
 			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
-			return new CargoPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
+			return new CargoPlane(name, priority, size, Airport.SIMULATION_PERIOD * landingAndTakingOffFactor);
 		} else {
 			System.out.println(name + " with " + priority + " priority " +  "and " + size + " size " + "arrives. Time: " + Airport.getCurrentSimulationTime());
-			return new PassengerPlane(name, priority, size, Airport.getCurrentSimulationTime() * landingAndTakingOffFactor);
+			return new PassengerPlane(name, priority, size, Airport.SIMULATION_PERIOD * landingAndTakingOffFactor);
 		}
 	}
 	
