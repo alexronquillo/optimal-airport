@@ -34,21 +34,30 @@ public class Arrivals implements Runnable {
 	public void run() {		
 		startTime = System.currentTimeMillis();
 		
+		double remainder = 0;
 		while (running) {
+			
 			double timeElapsedTotal = (System.currentTimeMillis()-startTime)/1000;
 			double arrivalTime = getEstimate(meanInterArrivalTime);
 			if (timeElapsedTotal > arrivalPeriod) {
 				running = false;
 			} else if ((timeElapsedTotal-elapsedTime) > arrivalTime) {
-				Airplane plane = generatePlane();
-				plane.startWait();
-				boolean success = false;
-				if (maxSizeOfArrivals >= arrivalsQueue.size()){
-					success = arrivalsQueue.offer(plane);
-				}
-				elapsedTime = timeElapsedTotal;
-				if (!success) {
-					rejectPlane(plane);
+				
+				double calculatedTime = timeElapsedTotal - elapsedTime;
+				int planesToMake = (int) ((calculatedTime + remainder )/ arrivalTime);
+				remainder = calculatedTime % arrivalTime;
+				
+				for (int i = 0; i < planesToMake; i++) {
+					Airplane plane = generatePlane();
+					plane.startWait();
+					boolean success = false;
+					if (maxSizeOfArrivals >= arrivalsQueue.size()){
+						success = arrivalsQueue.offer(plane);
+					}
+					elapsedTime = timeElapsedTotal;
+					if (!success) {
+						rejectPlane(plane);
+					}
 				}
 			}
 		}
