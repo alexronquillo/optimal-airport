@@ -70,10 +70,6 @@ public class Airplane implements Comparable<Airplane> {
 			public void run() {
 				Airport.getRunways().offer(runway);
 				runway.stopUse();
-				System.out.println(name + " took off. Time: " + Airport.getCurrentSimulationTime());
-				System.out.println("Time in Arrivals Queue: " + waitTimes.get(0));
-				System.out.println("Time in Landed Queue: " + waitTimes.get(1));
-				System.out.println("Time in Departure Queue: " + waitTimes.get(2));
 				takeoffTimer.cancel();
 			}
 		}, getTakeoffDelay());

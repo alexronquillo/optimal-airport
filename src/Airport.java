@@ -53,13 +53,7 @@ public class Airport {
 			{
 				Airplane testPlane = generatePlane();
 				++totalPlaneAttempts;
-				if (arrivalsQueue.offer(testPlane))
-				{
-					System.out.println(testPlane.getName() + " created at time: " + getCurrentSimulationTime());
-					System.out.println("Air stack size: " + arrivalsQueue.size());
-					System.out.println("Air stack rem cap: " + arrivalsQueue.remainingCapacity());
-				}
-				else
+				if (!arrivalsQueue.offer(testPlane))
 				{
 					System.out.println("Plane Rejected");
 					++rejectedPlanes;
@@ -114,14 +108,14 @@ public class Airport {
 			           "Simulation has completed. Results Follow:\n" +
                     "Average Gate Utilization: " + gateUtilization + "\n" + 
                     "Average Bay Utilization: " + bayUtilization + "\n" +
-                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / airTrafficController.getNumberOfPlanes()) / 1000 + "\n" +
-                    "Average Landed Queue Time: " + (totalGroundQueueTime / airTrafficController.getNumberOfPlanes()) / 1000 + "\n" +
-                    "Average Departure Queue Time: " + (totalDepartureQueueTime / airTrafficController.getNumberOfPlanes()) / 1000 + "\n" +
+                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+                    "Average Landed Queue Time: " + (totalGroundQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+                    "Average Departure Queue Time: " + (totalDepartureQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
                     "Rejected planes: " + rejectedPlanes + "\n" + 
                     "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
 					"Number of Passenger Planes: " + numPassengerPlanes + "\n" +
 					"Number of Cargo Planes: " + numCargoPlanes + "\n" +
-                    "Average Sojourn Time: " + cumulativeSojournTime / 1000 + "\n" +
+                    "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
                     "Average Runway Utilization: " + runwayUtil + "\n" +
                     "=================================================";
 			
@@ -158,7 +152,7 @@ public class Airport {
 		System.out.println(newPlane.getName() + " with " + 
 							newPlane.getPriority() + " priority " +  
 							"and " + newPlane.getSize() + " size " + 
-							"arrives. Time: " + Airport.getCurrentSimulationTime());
+							"arrives. Time: " + getCurrentSimulationTime());
 		return newPlane;
 	}
 
