@@ -8,6 +8,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 public class Airport {
 	// Following values are constants we should edit
 	public static final double SIMULATION_PERIOD = 1000;
@@ -43,10 +45,12 @@ public class Airport {
 	private static double totalGroundQueueTime = 0;
 	private static double totalDepartureQueueTime = 0;
 	private static int totalPlaneAttempts = 0;
-	
+	private static int maxPlanes = 2400;
+		
 	public static void main(String[] args) 
 	{
 		Timer arrivalTimer = new Timer();
+
 		arrivalTimer.schedule(new TimerTask() { 
 			@Override
 			public void run()
@@ -67,12 +71,22 @@ public class Airport {
 		Thread gmcThread = new Thread(groundMovementController);
 		gmcThread.start();
 
-		while (getCurrentSimulationTime() < SIMULATION_PERIOD);
+		while (true) {
+			//System.out.println(totalPlaneAttempts);
+
+			if (getAttempts() > maxPlanes){
+				break;
+			}
+		}
 		arrivalTimer.cancel();
 		System.out.println("Planes stop arriving");
 
 		while (arrivalsQueue.size() > 0 || landedQueue.size() > 0 || departureQueue.size() > 0 || !allGatesAvailable() || !allBaysAvailable());
 		closingProcedures();
+	}
+	
+	private static int getAttempts() {
+		return totalPlaneAttempts;
 	}
 
 	//do closing things
