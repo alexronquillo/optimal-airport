@@ -51,7 +51,6 @@ public class Airplane implements Comparable<Airplane> {
 				Airport.getRunways().offer(runway);
 				runway.stopUse();
 				Airport.getLandedQueue().offer(Airplane.this);
-				Airport.getAirTrafficController().signalLanded();
 				System.out.println(name + " landed. Time: " + Airport.getCurrentSimulationTime());
 				landingTimer.cancel();
 			}
