@@ -14,7 +14,7 @@ public class Airport {
 	// Following values are constants we should edit
 	public static final double SIMULATION_PERIOD = 1000;
 	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
-	private static final int NUMBER_OF_PLANES_PER_DAY = 2400;
+	private static final int NUMBER_OF_PLANES_PER_DAY = 10;
 	private static final double ARRIVAL_PERIOD = 500;
 	private static final int NUM_RUNWAYS = 5;
 	private static final int NUM_GATES = 207;
@@ -90,7 +90,7 @@ public class Airport {
 		double average = 0;
 		
 		//get average sojourn time
-		cumulativeSojournTime /= airTrafficController.getNumberOfPlanes();
+		cumulativeSojournTime /= (numPassengerPlanes + numCargoPlanes);
 		
 		
 		//get average runway utilization
