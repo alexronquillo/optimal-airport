@@ -12,10 +12,8 @@ import javax.swing.JOptionPane;
 
 public class Airport {
 	// Following values are constants we should edit
-	public static final double SIMULATION_PERIOD = 1000;
 	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
 	private static final int NUMBER_OF_PLANES_PER_DAY = 2400;
-	private static final double ARRIVAL_PERIOD = 500;
 	private static final int NUM_RUNWAYS = 5;
 	private static final int NUM_GATES = 207;
 	private static final int NUM_BAYS = 28;	
@@ -26,27 +24,23 @@ public class Airport {
 	private static final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
 	private static double LANDING_AND_TAKEOFF_FACTOR = 0.006944444;
 	
-	private static double startTime = System.currentTimeMillis();	
-	private static double runwayTotal = 0;
-	private static double cumulativeSojournTime = 0;
-	private volatile static int rejectedPlanes = 0;
-	private volatile static int numPassengerPlanes = 0;
-	private volatile static int numCargoPlanes = 0;
-	private static Random generator = new Random();
-	private static BlockingQueue<Runway> runways = initializeRunways();
-	private static Gate[] gates = initializeGates();
-	private static CargoBay[] bays = initializeCargoBays();
 	private static AirplaneArrivalsQueue arrivalsQueue = new AirplaneArrivalsQueue(ARRIVALS_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> departureQueue = new ArrayBlockingQueue<>(DEPARTURE_QUEUE_CAPACITY);
-	private static AirTrafficController airTrafficController = new AirTrafficController();
-	private static GroundMovementController groundMovementController = new GroundMovementController();
+	private static BlockingQueue<Runway> runways = initializeRunways();
+	private static Gate[] gates = initializeGates();
+	private static CargoBay[] bays = initializeCargoBays();
+	private static double runwayTotal = 0;
+	private static double totalSimulationPeriod = 0;
+	private volatile static int rejectedPlanes = 0;
+	private volatile static int numPassengerPlanes = 0;
+	private volatile static int numCargoPlanes = 0;
 
+	private static double startTime = System.currentTimeMillis();	
+	private static double cumulativeSojournTime = 0;
 	private static double totalArrivalsQueueTime = 0;
 	private static double totalGroundQueueTime = 0;
 	private static double totalDepartureQueueTime = 0;
-	private static int totalPlaneAttempts = 0;
-	private static int maxPlanes = 2400;
 		
 	public static void main(String[] args) 
 	{
@@ -74,10 +68,10 @@ public class Airport {
 			}
 		}, 0, 1);
 
-		Thread atcThread = new Thread(airTrafficController);
+		Thread atcThread = new Thread(new AirTrafficController());
 		atcThread.start();
 
-		Thread gmcThread = new Thread(groundMovementController);
+		Thread gmcThread = new Thread(new GroundMovementController());
 		gmcThread.start();
 	}
 	
@@ -142,17 +136,17 @@ public class Airport {
 	}
 
 	public static Airplane.Size getSize() {
-		int index = generator.nextInt(NUMBER_OF_SIZES);
+		int index = new Random().nextInt(NUMBER_OF_SIZES);
 		return Airplane.Size.values()[index];
 	}
 	
 	public static Airplane.Priority getPriority() {
-		int index = generator.nextInt(NUMBER_OF_PRIORITIES);
+		int index = new Random().nextInt(NUMBER_OF_PRIORITIES);
 		return Airplane.Priority.values()[index];
 	}
 	
 	public static Airplane generatePlane() {
-		int salt = generator.nextInt(100);
+		int salt = new Random().nextInt(100);
 
 		Airplane newPlane = null;
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER) {					
