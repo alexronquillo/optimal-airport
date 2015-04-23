@@ -13,7 +13,12 @@ import javax.swing.JOptionPane;
 public class Airport {
 	// Following values are constants we should edit
 	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
+<<<<<<< HEAD
 	private static final int NUMBER_OF_PLANES_PER_DAY = 2400;
+=======
+	private static final int NUMBER_OF_PLANES_PER_DAY = 10;
+	private static final double ARRIVAL_PERIOD = 500;
+>>>>>>> e16880c7800ea2fa78d93b70316c09c00caed120
 	private static final int NUM_RUNWAYS = 5;
 	private static final int NUM_GATES = 207;
 	private static final int NUM_BAYS = 28;	
@@ -84,7 +89,7 @@ public class Airport {
 		double average = 0;
 		
 		//get average sojourn time
-		cumulativeSojournTime /= airTrafficController.getNumberOfPlanes();
+		cumulativeSojournTime /= (numPassengerPlanes + numCargoPlanes);
 		
 		
 		//get average runway utilization
@@ -112,9 +117,9 @@ public class Airport {
 			           "Simulation has completed. Results Follow:\n" +
                     "Average Gate Utilization: " + gateUtilization + "\n" + 
                     "Average Bay Utilization: " + bayUtilization + "\n" +
-                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
-                    "Average Landed Queue Time: " + (totalGroundQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
-                    "Average Departure Queue Time: " + (totalDepartureQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
+                    "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
+                    "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
                     "Rejected planes: " + rejectedPlanes + "\n" + 
                     "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
 					"Number of Passenger Planes: " + numPassengerPlanes + "\n" +
