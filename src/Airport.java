@@ -14,6 +14,7 @@ public class Airport {
 	// Following values are constants we should edit
 	public static final double SIMULATION_PERIOD = 1000;
 	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
+	private static final int NUMBER_OF_PLANES_PER_DAY = 2400;
 	private static final double ARRIVAL_PERIOD = 500;
 	private static final int NUM_RUNWAYS = 5;
 	private static final int NUM_GATES = 207;
@@ -49,18 +50,26 @@ public class Airport {
 		
 	public static void main(String[] args) 
 	{
-		Timer arrivalTimer = new Timer();
-
-		arrivalTimer.schedule(new TimerTask() { 
+		final Timer arrivalsTimer = new Timer();
+		arrivalsTimer.schedule(new TimerTask() { 
 			@Override
 			public void run()
 			{
-				Airplane testPlane = generatePlane();
-				++totalPlaneAttempts;
-				if (!arrivalsQueue.offer(testPlane))
+				if (numPassengerPlanes + numCargoPlanes < NUMBER_OF_PLANES_PER_DAY)
 				{
-					System.out.println("Plane Rejected");
-					++rejectedPlanes;
+					Airplane testPlane = generatePlane();
+					++totalPlaneAttempts;
+					if (!arrivalsQueue.offer(testPlane))
+					{
+						System.out.println("Plane Rejected");
+						++rejectedPlanes;
+					}
+				}
+				else
+				{
+					arrivalsTimer.cancel();
+					while (arrivalsQueue.size() > 0 || landedQueue.size() > 0 || departureQueue.size() > 0 || !allGatesAvailable() || !allBaysAvailable());
+					closingProcedures();
 				}
 			}
 		}, 0, 1);
@@ -70,19 +79,6 @@ public class Airport {
 
 		Thread gmcThread = new Thread(groundMovementController);
 		gmcThread.start();
-
-		while (true) {
-			//System.out.println(totalPlaneAttempts);
-
-			if (getAttempts() > maxPlanes){
-				break;
-			}
-		}
-		arrivalTimer.cancel();
-		System.out.println("Planes stop arriving");
-
-		while (arrivalsQueue.size() > 0 || landedQueue.size() > 0 || departureQueue.size() > 0 || !allGatesAvailable() || !allBaysAvailable());
-		closingProcedures();
 	}
 	
 	private static int getAttempts() {
