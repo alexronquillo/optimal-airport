@@ -3,12 +3,9 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Random;
-
-import javax.swing.JOptionPane;
 
 public class Airport {
 	public static final int ARRIVALS_QUEUE_CAPACITY = 100;
@@ -99,15 +96,16 @@ public class Airport {
 			statisticsOutput += "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
 			statisticsOutput += "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
 			statisticsOutput += "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
+			statisticsOutput += "Average Sojourn Time: " + cumulativeSojournTime + "\n";
 			statisticsOutput += BAR;
 			statisticsOutput += "Rejected planes: " + rejectedPlanes + "\n";
 			statisticsOutput += "Throughput: " + throughput + "\n";
+			statisticsOutput += BAR;
 			statisticsOutput += "Number of Passenger Planes: " + numPassengerPlanes + "\n";
 			statisticsOutput += "Number of Cargo Planes: " + numCargoPlanes + "\n";
 			statisticsOutput += "Number of Small Planes: " + numSmallPlanes + "\n";
 			statisticsOutput += "Number of Medium Planes: " + numMediumPlanes + "\n";
 			statisticsOutput += "Number of Large Planes: " + numLargePlanes + "\n";
-			statisticsOutput += "Average Sojourn Time: " + cumulativeSojournTime + "\n";
 			statisticsOutput += BAR;
 			
 			FileWriter fileWriter = new FileWriter(new File("airport_stats.txt"));
@@ -127,8 +125,19 @@ public class Airport {
 			runwayStats += "Runway Total Time in Use: " + runways.poll().getTimeInUse() + "\n";
 		}
 		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simulationPeriod;
-		runwayStats += "Average Runway Utilization: " + runwayUtil + "\n";
-		return runwayStats;
+
+		try
+		{
+			FileWriter fileWriter = new FileWriter(new File("runway_stats.txt"));
+			fileWriter.write(runwayStats);
+			fileWriter.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "Average Runway Utilization: " + runwayUtil + "\n";
 	}
 
 	private static String getCargoBayStatistics(double simulationPeriod) {
