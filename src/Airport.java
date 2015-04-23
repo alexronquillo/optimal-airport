@@ -9,12 +9,12 @@ import java.util.Random;
 
 public class Airport {
 	public static final int ARRIVALS_QUEUE_CAPACITY = 100;
-	private static final int LANDED_QUEUE_CAPACITY = 300;
-	private static final int DEPARTURE_QUEUE_CAPACITY = 15;	
-	private static final int NUMBER_OF_PLANES_PER_DAY = 2500;
-	private static final int NUM_RUNWAYS = 5;
-	private static final int NUM_GATES = 9;
-	private static final int NUM_BAYS = 28;	
+	private static final int LANDED_QUEUE_CAPACITY = 100;
+	private static final int DEPARTURE_QUEUE_CAPACITY = 100;	
+	private static final int NUMBER_OF_PLANES_PER_DAY = 500;
+	private static final int NUM_RUNWAYS = 100;
+	private static final int NUM_GATES = 100;
+	private static final int NUM_BAYS = 100;	
 	private static final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private static final int NUMBER_OF_SIZES = Airplane.Size.values().length;
 	private static final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
@@ -79,8 +79,6 @@ public class Airport {
 	}
 	
 	private static void closingProcedures(double simulationPeriod) {
-		cumulativeSojournTime /= (numPassengerPlanes + numCargoPlanes);
-		
 		try {
 			String statisticsOutput = "";
 		
@@ -92,10 +90,10 @@ public class Airport {
 			statisticsOutput += getCargoBayStatistics(simulationPeriod);
 			statisticsOutput += getRunwayStatistics(simulationPeriod);
 			statisticsOutput += BAR;
-			statisticsOutput += "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + " ms\n";
-			statisticsOutput += "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + " ms\n";
-			statisticsOutput += "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + " ms\n";
-			statisticsOutput += "Average Sojourn Time: " + cumulativeSojournTime + " ms\n";
+			statisticsOutput += "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / throughput) + " ms\n";
+			statisticsOutput += "Average Landed Queue Time: " + (totalGroundQueueTime / throughput) + " ms\n";
+			statisticsOutput += "Average Departure Queue Time: " + (totalDepartureQueueTime / throughput) + " ms\n";
+			statisticsOutput += "Average Sojourn Time: " + (cumulativeSojournTime / throughput) + " ms\n";
 			statisticsOutput += BAR;
 			statisticsOutput += "Total Simulation Time: " + simulationPeriod + " ms\n";
 			statisticsOutput += "Throughput: " + throughput + "\n";
@@ -161,7 +159,7 @@ public class Airport {
 			e.printStackTrace();
 		}
 
-		return "Average Bay Utilization: " + bayUtilization + "\n";
+		return "Average Cargo Bay Utilization: " + bayUtilization + "\n";
 	}
 
 	private static String getGateStatistics(double simulationPeriod) {

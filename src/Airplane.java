@@ -23,6 +23,7 @@ public class Airplane implements Comparable<Airplane> {
 		this.priority = priority;
 		this.size = size;
 		this.timeEnteredSystem = System.currentTimeMillis();
+		startWait();
 	}
 	
 	public Priority getPriority() {
