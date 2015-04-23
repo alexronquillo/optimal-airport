@@ -11,9 +11,9 @@ public class Airport {
 	public static final int ARRIVALS_QUEUE_CAPACITY = 100;
 	private static final int LANDED_QUEUE_CAPACITY = 300;
 	private static final int DEPARTURE_QUEUE_CAPACITY = 15;	
-	private static final int NUMBER_OF_PLANES_PER_DAY = 300;
+	private static final int NUMBER_OF_PLANES_PER_DAY = 2500;
 	private static final int NUM_RUNWAYS = 5;
-	private static final int NUM_GATES = 207;
+	private static final int NUM_GATES = 9;
 	private static final int NUM_BAYS = 28;	
 	private static final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private static final int NUMBER_OF_SIZES = Airplane.Size.values().length;
