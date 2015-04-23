@@ -11,6 +11,13 @@ public class Runway {
 	
 	public void stopUse(){
 		stopUse = Airport.getCurrentSimulationTime();
-		Airport.addRunwayTotal(stopUse - startUse);
+
+		double totalUsageTime = stopUse - startUse;
+		timeInUse += totalUsageTime;
+		Airport.addRunwayTotal(totalUsageTime);
+	}
+
+	public double getTimeInUse() {
+		return timeInUse;
 	}
 }

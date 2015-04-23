@@ -12,18 +12,15 @@ public class CargoPlaneServiceBehavior implements ServiceBehavior {
 	
 	@Override
 	public long getServiceTime(Airplane airplane) {
-		double serviceTimeRatio = 0.0555555;
-		double serviceTime = Airport.SIMULATION_PERIOD * serviceTimeRatio;
-		
 		switch (airplane.getSize()) {
 			case SMALL:
-				return (long)(serviceTime * 1.2);
+				return 10;
 			case MEDIUM:
-				return (long)(serviceTime * 1.5);				
+				return 15;
 			case LARGE:
-				return (long)(serviceTime * 1.8);
+				return 20;
 			default:
-				return (long)(serviceTime * 2);
+				return 20;
 		}
 	}
 

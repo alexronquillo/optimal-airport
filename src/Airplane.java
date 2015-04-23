@@ -13,17 +13,15 @@ public class Airplane implements Comparable<Airplane> {
 	private double startWait = 0;
 	private double stopWait = 0;
 	private double totalWait = 0;
-	private double landingAndTakeoffTime = 0;
 	public ArrayList<Double> waitTimes = new ArrayList<Double>();
 	
 	private long timeEnteredSystem = 0;
 	private long timeExitedSystem = 0;
 	
-	public Airplane(String name, Priority priority, Size size, double landingAndTakeoffTime) {
+	public Airplane(String name, Priority priority, Size size) {
 		this.name = name;		
 		this.priority = priority;
 		this.size = size;
-		this.landingAndTakeoffTime = landingAndTakeoffTime;
 		this.timeEnteredSystem = System.currentTimeMillis();
 	}
 	
@@ -109,34 +107,38 @@ public class Airplane implements Comparable<Airplane> {
 	}
 	
 	private long getTakeoffDelay() {
-		long takeoffDelay = (long) (landingAndTakeoffTime);
+		long takeoffDelay;
 		switch (size) {
 			case SMALL:
-				takeoffDelay = (long) (landingAndTakeoffTime * 1.1);
+				takeoffDelay = 1;
 				break;
 			case MEDIUM:
-				takeoffDelay = (long)(landingAndTakeoffTime * 1.2);
+				takeoffDelay = 2;
 				break;
 			case LARGE:
-				takeoffDelay = (long) (landingAndTakeoffTime * 1.3);
+				takeoffDelay = 3;
 				break;
+			default:
+				takeoffDelay = 3;
 		}
 		return takeoffDelay;
 	}
 	
 	private long getLandingDelay() {
-		long landingDelay = (long) (landingAndTakeoffTime);
+		long landingDelay;
 		switch (size) {
 			case SMALL:
-				landingDelay = (long) (landingAndTakeoffTime * 1.1);
+				landingDelay = 1;
 				break;
 			case MEDIUM:
-				landingDelay = (long) (landingAndTakeoffTime * 1.2);
+				landingDelay = 2;
 				break;
 			case LARGE:
-				landingDelay = (long) (landingAndTakeoffTime * 1.3);
+				landingDelay = 3;
 				break;
-	}
+			default:
+				landingDelay = 3;
+		}
 		return landingDelay;
 	}
 	

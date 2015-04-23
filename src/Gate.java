@@ -1,6 +1,6 @@
 
 public class Gate extends ServiceArea {
-	public Gate(String name, double simTime) {
+	public Gate(String name) {
 		super(name, new PassengerPlaneServiceBehavior());
 	}
 

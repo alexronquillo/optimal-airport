@@ -11,23 +11,18 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 public class Airport {
-	// Following values are constants we should edit
-	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
-<<<<<<< HEAD
-	private static final int NUMBER_OF_PLANES_PER_DAY = 2400;
-=======
-	private static final int NUMBER_OF_PLANES_PER_DAY = 10;
-	private static final double ARRIVAL_PERIOD = 500;
->>>>>>> e16880c7800ea2fa78d93b70316c09c00caed120
+	public static final int ARRIVALS_QUEUE_CAPACITY = 100;
+	private static final int LANDED_QUEUE_CAPACITY = 300;
+	private static final int DEPARTURE_QUEUE_CAPACITY = 15;	
+	private static final int NUMBER_OF_PLANES_PER_DAY = 300;
 	private static final int NUM_RUNWAYS = 5;
 	private static final int NUM_GATES = 207;
 	private static final int NUM_BAYS = 28;	
-	private static final int LANDED_QUEUE_CAPACITY = 300;
-	private static final int DEPARTURE_QUEUE_CAPACITY = 15;	
 	private static final int PERCENTAGE_OF_PLANES_AS_PASSENGER = 75;
 	private static final int NUMBER_OF_SIZES = Airplane.Size.values().length;
 	private static final int NUMBER_OF_PRIORITIES = Airplane.Priority.values().length;
-	private static double LANDING_AND_TAKEOFF_FACTOR = 0.006944444;
+	private static final String BAR = "--------------------------------------------------\n";
+	private static final String DOUBLE_BAR = "==================================================\n";
 	
 	private static AirplaneArrivalsQueue arrivalsQueue = new AirplaneArrivalsQueue(ARRIVALS_QUEUE_CAPACITY);
 	private static BlockingQueue<Airplane> landedQueue = new ArrayBlockingQueue<>(LANDED_QUEUE_CAPACITY);
@@ -36,16 +31,20 @@ public class Airport {
 	private static Gate[] gates = initializeGates();
 	private static CargoBay[] bays = initializeCargoBays();
 	private static double runwayTotal = 0;
-	private static double totalSimulationPeriod = 0;
-	private volatile static int rejectedPlanes = 0;
-	private volatile static int numPassengerPlanes = 0;
-	private volatile static int numCargoPlanes = 0;
+	private static int rejectedPlanes = 0;
+	private static int numPassengerPlanes = 0;
+	private static int numCargoPlanes = 0;
+	private static int numLargePlanes = 0;
+	private static int numMediumPlanes = 0;
+	private static int numSmallPlanes = 0;
+	private static int throughput = 0;
 
 	private static double startTime = System.currentTimeMillis();	
 	private static double cumulativeSojournTime = 0;
 	private static double totalArrivalsQueueTime = 0;
 	private static double totalGroundQueueTime = 0;
 	private static double totalDepartureQueueTime = 0;
+	private static double totalSimulationPeriod = 0;
 		
 	public static void main(String[] args) 
 	{
@@ -57,18 +56,21 @@ public class Airport {
 				if (numPassengerPlanes + numCargoPlanes < NUMBER_OF_PLANES_PER_DAY)
 				{
 					Airplane testPlane = generatePlane();
-					++totalPlaneAttempts;
 					if (!arrivalsQueue.offer(testPlane))
 					{
 						System.out.println("Plane Rejected");
 						++rejectedPlanes;
+					}
+					else
+					{
+						++throughput;
 					}
 				}
 				else
 				{
 					arrivalsTimer.cancel();
 					while (arrivalsQueue.size() > 0 || landedQueue.size() > 0 || departureQueue.size() > 0 || !allGatesAvailable() || !allBaysAvailable());
-					closingProcedures();
+					closingProcedures(getCurrentSimulationTime());
 				}
 			}
 		}, 0, 1);
@@ -80,55 +82,33 @@ public class Airport {
 		gmcThread.start();
 	}
 	
-	private static int getAttempts() {
-		return totalPlaneAttempts;
-	}
-
-	//do closing things
-	private static void closingProcedures() {
-		double average = 0;
-		
-		//get average sojourn time
+	private static void closingProcedures(double simulationPeriod) {
 		cumulativeSojournTime /= (numPassengerPlanes + numCargoPlanes);
 		
-		
-		//get average runway utilization
-		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / getCurrentSimulationTime();
-		
-		//get average gate utilization
-	    average = 0;
-		for (Gate g : gates) {
-		     	average += g.getTotalWait();
-		}
-		average /= NUM_GATES;
-		double gateUtilization = average / getCurrentSimulationTime();
-		
-		//get average bay utilization
-		average = 0;
-		for (CargoBay b : bays) {
-	     	average += b.getTotalWait();
-		}
-		average /= NUM_BAYS;
-		double bayUtilization = average / getCurrentSimulationTime();
-		
 		try {
-			String statisticsOutput = "=================================================\n"+
-                    "Optimal Airport Simulation\n" + 
-			           "Simulation has completed. Results Follow:\n" +
-                    "Average Gate Utilization: " + gateUtilization + "\n" + 
-                    "Average Bay Utilization: " + bayUtilization + "\n" +
-                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
-                    "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
-                    "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
-                    "Rejected planes: " + rejectedPlanes + "\n" + 
-                    "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
-					"Number of Passenger Planes: " + numPassengerPlanes + "\n" +
-					"Number of Cargo Planes: " + numCargoPlanes + "\n" +
-                    "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
-                    "Average Runway Utilization: " + runwayUtil + "\n" +
-                    "Sim Time: " + getCurrentSimulationTime() + "\n" +
-
-                    "=================================================";
+			String statisticsOutput = "";
+		
+			statisticsOutput += DOUBLE_BAR;
+            statisticsOutput += "Optimal Airport Simulation\n";
+			statisticsOutput += "Simulation has completed at time: " + simulationPeriod + ". Results:\n";
+			statisticsOutput += DOUBLE_BAR;
+			statisticsOutput += getGateStatistics(simulationPeriod);
+			statisticsOutput += getCargoBayStatistics(simulationPeriod);
+			statisticsOutput += getRunwayStatistics(simulationPeriod);
+			statisticsOutput += BAR;
+			statisticsOutput += "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
+			statisticsOutput += "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
+			statisticsOutput += "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
+			statisticsOutput += BAR;
+			statisticsOutput += "Rejected planes: " + rejectedPlanes + "\n";
+			statisticsOutput += "Throughput: " + throughput + "\n";
+			statisticsOutput += "Number of Passenger Planes: " + numPassengerPlanes + "\n";
+			statisticsOutput += "Number of Cargo Planes: " + numCargoPlanes + "\n";
+			statisticsOutput += "Number of Small Planes: " + numSmallPlanes + "\n";
+			statisticsOutput += "Number of Medium Planes: " + numMediumPlanes + "\n";
+			statisticsOutput += "Number of Large Planes: " + numLargePlanes + "\n";
+			statisticsOutput += "Average Sojourn Time: " + cumulativeSojournTime + "\n";
+			statisticsOutput += BAR;
 			
 			FileWriter fileWriter = new FileWriter(new File("airport_stats.txt"));
 			fileWriter.write(statisticsOutput);
@@ -140,9 +120,81 @@ public class Airport {
 		System.exit(0);
 	}
 
+	private static String getRunwayStatistics(double simulationPeriod) {
+		String runwayStats = "";
+		while (runways.size() > 0)
+		{
+			runwayStats += "Runway Total Time in Use: " + runways.poll().getTimeInUse() + "\n";
+		}
+		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / simulationPeriod;
+		runwayStats += "Average Runway Utilization: " + runwayUtil + "\n";
+		return runwayStats;
+	}
+
+	private static String getCargoBayStatistics(double simulationPeriod) {
+		String cargoBayStats = "";
+		double sum = 0;
+		for (CargoBay b : bays) {
+			cargoBayStats += b.getName() + " Total Time in Use: " + b.getTotalUsageTime() + "\n";
+			sum += b.getTotalUsageTime();
+		}
+		double average = (sum /NUM_BAYS);
+		double bayUtilization = (average / simulationPeriod);
+
+		try
+		{
+			FileWriter fileWriter = new FileWriter(new File("cargobay_stats.txt"));
+			fileWriter.write(cargoBayStats);
+			fileWriter.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "Average Bay Utilization: " + bayUtilization + "\n";
+	}
+
+	private static String getGateStatistics(double simulationPeriod) {
+		String gateStats = "";
+		double sum = 0;
+		for (Gate g : gates) {
+				gateStats += g.getName() + " Total Time in Use: " + g.getTotalUsageTime() + "\n";
+				sum += g.getTotalUsageTime();
+		}
+		double average = (sum / NUM_GATES);
+		double gateUtilization = (average / simulationPeriod);	
+
+		try
+		{
+			FileWriter fileWriter = new FileWriter(new File("gate_stats.txt"));
+			fileWriter.write(gateStats);
+			fileWriter.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return "Average Gate Utilization: " + gateUtilization + "\n";
+	}
+
 	public static Airplane.Size getSize() {
 		int index = new Random().nextInt(NUMBER_OF_SIZES);
-		return Airplane.Size.values()[index];
+		Airplane.Size size = Airplane.Size.values()[index];
+		switch (size) {
+			case LARGE:
+				++numLargePlanes;
+				break;
+			case MEDIUM:
+				++numMediumPlanes;
+				break;
+			case SMALL:
+				++numSmallPlanes;
+				break;
+		}
+
+		return size;
 	}
 	
 	public static Airplane.Priority getPriority() {
@@ -155,9 +207,9 @@ public class Airport {
 
 		Airplane newPlane = null;
 		if (salt > PERCENTAGE_OF_PLANES_AS_PASSENGER) {					
-			newPlane = new CargoPlane("Cargo Plane " + numCargoPlanes++, getPriority(), getSize(), SIMULATION_PERIOD * LANDING_AND_TAKEOFF_FACTOR);
+			newPlane = new CargoPlane("Cargo Plane " + numCargoPlanes++, getPriority(), getSize());
 		} else {
-			newPlane = new PassengerPlane("Passenger Plane " + numPassengerPlanes++, getPriority(), getSize(), SIMULATION_PERIOD * LANDING_AND_TAKEOFF_FACTOR);
+			newPlane = new PassengerPlane("Passenger Plane " + numPassengerPlanes++, getPriority(), getSize());
 		}
 
 		System.out.println(newPlane.getName() + " with " + 
@@ -215,14 +267,6 @@ public class Airport {
 		return bays;
 	}
 	
-	public static AirTrafficController getAirTrafficController() {
-		return airTrafficController;
-	}
-	
-	public static GroundMovementController getGroundMovementController() {
-		return groundMovementController;
-	}
-	
 	public static AirplaneArrivalsQueue getArrivalsQueue() {
 		return arrivalsQueue;
 	}
@@ -251,7 +295,7 @@ public class Airport {
 	private static Gate[] initializeGates() {
 		Gate[] gates = new Gate[NUM_GATES];
 		for (int i = 0; i < NUM_GATES; ++i) {
-			gates[i] = new Gate("Gate " + i, SIMULATION_PERIOD);
+			gates[i] = new Gate("Gate " + i);
 		}
 		return gates;
 	}
@@ -259,7 +303,7 @@ public class Airport {
 	private static CargoBay[] initializeCargoBays() {
 		CargoBay[] bays = new CargoBay[NUM_BAYS];
 		for (int i = 0; i < NUM_BAYS; ++i) {
-			bays[i] = new CargoBay("CargoBay " + i, SIMULATION_PERIOD);
+			bays[i] = new CargoBay("CargoBay " + i);
 		}
 		return bays;
 	}
