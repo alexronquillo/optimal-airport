@@ -1,4 +1,7 @@
 /bin/
-compile_project
+compile
 run_sim
 airport_stats.txt
+cargobay_stats.txt
+gate_stats.txt
+runway_stats.txt

@@ -41,7 +41,6 @@ public class Airport {
 	private static double totalArrivalsQueueTime = 0;
 	private static double totalGroundQueueTime = 0;
 	private static double totalDepartureQueueTime = 0;
-	private static double totalSimulationPeriod = 0;
 		
 	public static void main(String[] args) 
 	{
@@ -87,19 +86,20 @@ public class Airport {
 		
 			statisticsOutput += DOUBLE_BAR;
             statisticsOutput += "Optimal Airport Simulation\n";
-			statisticsOutput += "Simulation has completed at time: " + simulationPeriod + ". Results:\n";
+			statisticsOutput += "Simulation has completed. Results:\n";
 			statisticsOutput += DOUBLE_BAR;
 			statisticsOutput += getGateStatistics(simulationPeriod);
 			statisticsOutput += getCargoBayStatistics(simulationPeriod);
 			statisticsOutput += getRunwayStatistics(simulationPeriod);
 			statisticsOutput += BAR;
-			statisticsOutput += "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
-			statisticsOutput += "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
-			statisticsOutput += "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n";
-			statisticsOutput += "Average Sojourn Time: " + cumulativeSojournTime + "\n";
+			statisticsOutput += "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + " ms\n";
+			statisticsOutput += "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + " ms\n";
+			statisticsOutput += "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + " ms\n";
+			statisticsOutput += "Average Sojourn Time: " + cumulativeSojournTime + " ms\n";
 			statisticsOutput += BAR;
-			statisticsOutput += "Rejected planes: " + rejectedPlanes + "\n";
+			statisticsOutput += "Total Simulation Time: " + simulationPeriod + " ms\n";
 			statisticsOutput += "Throughput: " + throughput + "\n";
+			statisticsOutput += "Rejected Planes: " + rejectedPlanes + "\n";
 			statisticsOutput += BAR;
 			statisticsOutput += "Number of Passenger Planes: " + numPassengerPlanes + "\n";
 			statisticsOutput += "Number of Cargo Planes: " + numCargoPlanes + "\n";
