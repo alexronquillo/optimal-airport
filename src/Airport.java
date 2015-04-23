@@ -118,9 +118,9 @@ public class Airport {
 			           "Simulation has completed. Results Follow:\n" +
                     "Average Gate Utilization: " + gateUtilization + "\n" + 
                     "Average Bay Utilization: " + bayUtilization + "\n" +
-                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
-                    "Average Landed Queue Time: " + (totalGroundQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
-                    "Average Departure Queue Time: " + (totalDepartureQueueTime / airTrafficController.getNumberOfPlanes()) + "\n" +
+                    "Average Arrivals Queue Time: " + (totalArrivalsQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
+                    "Average Landed Queue Time: " + (totalGroundQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
+                    "Average Departure Queue Time: " + (totalDepartureQueueTime / (numPassengerPlanes + numCargoPlanes)) + "\n" +
                     "Rejected planes: " + rejectedPlanes + "\n" + 
                     "Planes Serviced: " + airTrafficController.getNumberOfPlanes() + "\n" +
 					"Number of Passenger Planes: " + numPassengerPlanes + "\n" +
