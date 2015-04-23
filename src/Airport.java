@@ -14,7 +14,7 @@ public class Airport {
 	// Following values are constants we should edit
 	public static final double SIMULATION_PERIOD = 1000;
 	public static final int ARRIVALS_QUEUE_CAPACITY = 550;
-	private static final int NUMBER_OF_PLANES_PER_DAY = 2400;
+	private static final int NUMBER_OF_PLANES_PER_DAY = 240;
 	private static final double ARRIVAL_PERIOD = 500;
 	private static final int NUM_RUNWAYS = 5;
 	private static final int NUM_GATES = 207;
@@ -94,7 +94,7 @@ public class Airport {
 		
 		
 		//get average runway utilization
-		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / SIMULATION_PERIOD;
+		double runwayUtil = (runwayTotal / NUM_RUNWAYS) / getCurrentSimulationTime();
 		
 		//get average gate utilization
 	    average = 0;
@@ -102,7 +102,7 @@ public class Airport {
 		     	average += g.getTotalWait();
 		}
 		average /= NUM_GATES;
-		double gateUtilization = average / SIMULATION_PERIOD;
+		double gateUtilization = average / getCurrentSimulationTime();
 		
 		//get average bay utilization
 		average = 0;
@@ -110,7 +110,7 @@ public class Airport {
 	     	average += b.getTotalWait();
 		}
 		average /= NUM_BAYS;
-		double bayUtilization = average / SIMULATION_PERIOD;
+		double bayUtilization = average / getCurrentSimulationTime();
 		
 		try {
 			String statisticsOutput = "=================================================\n"+
@@ -127,6 +127,8 @@ public class Airport {
 					"Number of Cargo Planes: " + numCargoPlanes + "\n" +
                     "Average Sojourn Time: " + cumulativeSojournTime + "\n" +
                     "Average Runway Utilization: " + runwayUtil + "\n" +
+                    "Sim Time: " + getCurrentSimulationTime() + "\n" +
+
                     "=================================================";
 			
 			FileWriter fileWriter = new FileWriter(new File("airport_stats.txt"));
