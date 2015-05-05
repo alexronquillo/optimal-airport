@@ -59,6 +59,6 @@ public abstract class ServiceArea {
 	
 	private void sendAirplaneToDepartureQueue(Airplane plane) {
 		while (!Airport.getDepartureQueue().offer(plane));
-		System.out.println(plane.getName() + " added to the departure queue.");
+		System.out.println(plane.getName() + " added to the departure queue. Time: " + Airport.getCurrentSimulationTime());
 	}
 }

@@ -64,12 +64,12 @@ public class GroundMovementController implements Runnable {
 	}
 
 	private static void setPassengerPlaneToGate(Gate gate, PassengerPlane plane) {
-		System.out.println("Ground Movement Controller assigns " + plane.getName() + " to " + gate.getName() + ".");
+		System.out.println("Ground Movement Controller assigns " + plane.getName() + " to " + gate.getName() + ". Time: " + Airport.getCurrentSimulationTime());
 		gate.service(plane);
 	}
 
 	private static void setCargoPlaneToCargoBay(CargoBay bay, CargoPlane plane) {
-		System.out.println("Ground Movement Controller assigns " + plane.getName() + " to " + bay.getName() + ".");
+		System.out.println("Ground Movement Controller assigns " + plane.getName() + " to " + bay.getName() + ". Time: " + Airport.getCurrentSimulationTime());
 		bay.service(plane);
 	}
 
